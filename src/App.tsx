@@ -1,13 +1,25 @@
-import { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import MainLayout from './components/layout/MainLayout';
+import ExportPage from './pages/ExportPage';
+import FramesPage from './pages/FramesPage';
+import GraphPage from './pages/GraphPage';
+import HomePage from './pages/HomePage';
+import NotFoundPage from './pages/NotFoundPage';
+import RelationsPage from './pages/RelationsPage';
 import './styles/App.css';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <h1 className='text-3xl font-bold text-blue-500'>Tailwind is working</h1>
-    </>
+    <Routes>
+      <Route path='/' element={<MainLayout />}>
+        <Route index element={<HomePage />} />
+        <Route path='graph' element={<GraphPage />} />
+        <Route path='frames' element={<FramesPage />} />
+        <Route path='relations' element={<RelationsPage />} />
+        <Route path='export' element={<ExportPage />} />
+        <Route path='*' element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   );
 }
 
