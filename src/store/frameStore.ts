@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { sampleFrames } from '../data/sampleFrames';
 import type { Frame } from '../types/frame';
 import type { Relation } from '../types/relation';
@@ -19,48 +20,76 @@ interface FrameStore {
 
   addRelation: (relation: Relation) => void;
   deleteRelation: (relationId: string) => void;
+
+  resetStore: () => void;
 }
 
-export const useFrameStore = create<FrameStore>((set) => ({
-  frames: sampleFrames,
-  relations: initialRelations,
-  selectedFrame: null,
+export const useFrameStore = create<FrameStore>()(
+  persist(
+    (set) => ({
+      frames: sampleFrames,
+      relations: initialRelations,
+      selectedFrame: null,
 
-  addFrame: (frame) =>
-    set((state) => ({
-      frames: [...state.frames, frame],
-    })),
+      addFrame: (frame) =>
+        set((state) => ({
+          frames: [...state.frames, frame],
+        })),
 
-  updateFrame: (updatedFrame) =>
-    set((state) => ({
-      frames: state.frames.map((frame) =>
-        frame.id === updatedFrame.id ? updatedFrame : frame,
-      ),
-    })),
+      updateFrame: (updatedFrame) =>
+        set((state) => ({
+          frames: state.frames.map((frame) =>
+            frame.id === updatedFrame.id ? updatedFrame : frame,
+          ),
+        })),
+      deleteFrame: (frameId) =>
+        set((state) => ({
+          frames: state.frames
+            .filter((frame) => frame.id !== frameId)
+            .map((frame) => ({
+              ...frame,
+              parentIds: frame.parentIds.filter((id) => id !== frameId),
+              childIds: frame.childIds.filter((id) => id !== frameId),
+            })),
+          relations: state.relations.filter(
+            (relation) =>
+              relation.sourceId !== frameId && relation.targetId !== frameId,
+          ),
+          selectedFrame:
+            state.selectedFrame?.id === frameId ? null : state.selectedFrame,
+        })),
 
-  deleteFrame: (frameId) =>
-    set((state) => ({
-      frames: state.frames.filter((frame) => frame.id !== frameId),
-      relations: state.relations.filter(
-        (relation) =>
-          relation.sourceId !== frameId && relation.targetId !== frameId,
-      ),
-    })),
+      selectFrame: (frame) =>
+        set(() => ({
+          selectedFrame: frame,
+        })),
 
-  selectFrame: (frame) =>
-    set(() => ({
-      selectedFrame: frame,
-    })),
+      addRelation: (relation) =>
+        set((state) => ({
+          relations: [...state.relations, relation],
+        })),
 
-  addRelation: (relation) =>
-    set((state) => ({
-      relations: [...state.relations, relation],
-    })),
+      deleteRelation: (relationId) =>
+        set((state) => ({
+          relations: state.relations.filter(
+            (relation) => relation.id !== relationId,
+          ),
+        })),
 
-  deleteRelation: (relationId) =>
-    set((state) => ({
-      relations: state.relations.filter(
-        (relation) => relation.id !== relationId,
-      ),
-    })),
-}));
+      resetStore: () =>
+        set(() => ({
+          frames: sampleFrames,
+          relations: initialRelations,
+          selectedFrame: null,
+        })),
+    }),
+    {
+      name: 'ie-graph-storage',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        frames: state.frames,
+        relations: state.relations,
+      }),
+    },
+  ),
+);

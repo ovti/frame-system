@@ -1,15 +1,22 @@
+import type { MouseEvent } from 'react';
 import type { Frame } from '../../types/frame';
 
 interface FrameCardProps {
   frame: Frame;
   onClick: () => void;
+  onDelete: () => void;
 }
 
-function FrameCard({ frame, onClick }: FrameCardProps) {
+function FrameCard({ frame, onClick, onDelete }: FrameCardProps) {
+  const handleDeleteClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    onDelete();
+  };
+
   return (
-    <button
+    <div
       onClick={onClick}
-      className='w-full rounded-2xl bg-white p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-md'
+      className='cursor-pointer rounded-2xl bg-white p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-md'
     >
       <div className='mb-4 flex items-start justify-between gap-4'>
         <div>
@@ -25,7 +32,7 @@ function FrameCard({ frame, onClick }: FrameCardProps) {
 
       <p className='mb-4 text-sm text-slate-600'>{frame.description}</p>
 
-      <div className='flex flex-wrap gap-2'>
+      <div className='mb-4 flex flex-wrap gap-2'>
         {frame.slots.slice(0, 3).map((slot) => (
           <span
             key={slot.id}
@@ -35,7 +42,17 @@ function FrameCard({ frame, onClick }: FrameCardProps) {
           </span>
         ))}
       </div>
-    </button>
+
+      <div className='flex justify-end'>
+        <button
+          type='button'
+          onClick={handleDeleteClick}
+          className='rounded-lg border border-red-200 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50'
+        >
+          Usuń
+        </button>
+      </div>
+    </div>
   );
 }
 

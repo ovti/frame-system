@@ -7,7 +7,7 @@ import { useFrameStore } from '../store/frameStore';
 import type { Frame } from '../types/frame';
 
 function FramesPage() {
-  const { frames, addFrame } = useFrameStore();
+  const { frames, addFrame, deleteFrame } = useFrameStore();
 
   const [selectedFrame, setSelectedFrame] = useState<Frame | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -27,6 +27,19 @@ function FramesPage() {
     addFrame(frame);
     setIsCreateModalOpen(false);
   };
+
+  const handleDeleteFrame = (frameId: string) => {
+    const confirmed = window.confirm('Czy na pewno chcesz usunąć tę ramkę?');
+
+    if (!confirmed) return;
+
+    if (selectedFrame?.id === frameId) {
+      handleCloseDetails();
+    }
+
+    deleteFrame(frameId);
+  };
+
   return (
     <div>
       <div className='mb-6 flex items-center justify-between'>
@@ -45,15 +58,23 @@ function FramesPage() {
         </button>
       </div>
 
-      <div className='grid gap-4 md:grid-cols-2 xl:grid-cols-3'>
-        {frames.map((frame) => (
-          <FrameCard
-            key={frame.id}
-            frame={frame}
-            onClick={() => handleOpenDetails(frame)}
-          />
-        ))}
-      </div>
+      {frames.length === 0 ? (
+        <div className='rounded-2xl bg-white p-6 shadow-sm'>
+          <p className='text-slate-500'>Brak ramek.</p>
+        </div>
+      ) : (
+        <div className='grid gap-4 md:grid-cols-2 xl:grid-cols-3'>
+          {frames.map((frame) => (
+            <FrameCard
+              key={frame.id}
+              frame={frame}
+              onClick={() => handleOpenDetails(frame)}
+              onDelete={() => handleDeleteFrame(frame.id)}
+            />
+          ))}
+        </div>
+      )}
+
       <FrameDetailsModal
         frame={selectedFrame}
         isOpen={isDetailsModalOpen}
