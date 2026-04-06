@@ -1,3 +1,4 @@
+import { useFrameStore } from '../../store/frameStore';
 import type { Frame } from '../../types/frame';
 import Modal from '../common/Modal';
 
@@ -8,7 +9,18 @@ interface FrameDetailsModalProps {
 }
 
 function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
+  const { frames, relations } = useFrameStore();
+
   if (!frame) return null;
+
+  const relatedRelations = relations.filter(
+    (relation) =>
+      relation.sourceId === frame.id || relation.targetId === frame.id,
+  );
+
+  const getFrameName = (frameId: string) => {
+    return frames.find((item) => item.id === frameId)?.name ?? frameId;
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -40,7 +52,7 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                     key={parentId}
                     className='rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700'
                   >
-                    {parentId}
+                    {getFrameName(parentId)}
                   </span>
                 ))}
               </div>
@@ -61,7 +73,7 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                     key={childId}
                     className='rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700'
                   >
-                    {childId}
+                    {getFrameName(childId)}
                   </span>
                 ))}
               </div>
@@ -135,11 +147,11 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
         <div>
           <h4 className='mb-4 text-lg font-semibold text-slate-900'>Relacje</h4>
 
-          {frame.relations.length === 0 ? (
+          {relatedRelations.length === 0 ? (
             <p className='text-slate-500'>Brak relacji</p>
           ) : (
             <div className='space-y-2'>
-              {frame.relations.map((relation) => (
+              {relatedRelations.map((relation) => (
                 <div
                   key={relation.id}
                   className='rounded-lg border border-slate-200 px-4 py-3'
@@ -147,7 +159,12 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                   <p className='font-medium text-slate-900'>{relation.label}</p>
 
                   <p className='mt-1 text-sm text-slate-500'>
-                    {relation.sourceId} → {relation.targetId}
+                    {getFrameName(relation.sourceId)} →{' '}
+                    {getFrameName(relation.targetId)}
+                  </p>
+
+                  <p className='mt-1 text-xs text-slate-400'>
+                    Typ: {relation.type}
                   </p>
                 </div>
               ))}

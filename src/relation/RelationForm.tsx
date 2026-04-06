@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { Frame } from '../types/frame';
-import type { Relation, RelationType } from '../types/relation';
+import type { Frame } from '../../types/frame';
+import type { Relation, RelationType } from '../../types/relation';
 
 interface RelationFormProps {
   frames: Frame[];
@@ -13,11 +13,45 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
   const [targetId, setTargetId] = useState('');
   const [label, setLabel] = useState('');
   const [type, setType] = useState<RelationType>('ASSOCIATION');
+  const [error, setError] = useState('');
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError('');
 
-    if (!sourceId || !targetId || sourceId === targetId) return;
+    if (!sourceId || !targetId) {
+      setError('Wybierz ramkę źródłową i docelową.');
+      return;
+    }
+
+    if (sourceId === targetId) {
+      setError('Nie można utworzyć relacji ramki do samej siebie.');
+      return;
+    }
+
+    const sourceFrame = frames.find((frame) => frame.id === sourceId);
+    const targetFrame = frames.find((frame) => frame.id === targetId);
+
+    if (!sourceFrame || !targetFrame) {
+      setError('Nie znaleziono wybranych ramek.');
+      return;
+    }
+
+    if (
+      type === 'INHERITS_FROM' &&
+      (sourceFrame.type !== 'CLASS' || targetFrame.type !== 'CLASS')
+    ) {
+      setError('Relacja INHERITS_FROM jest dozwolona tylko między klasami.');
+      return;
+    }
+
+    if (
+      type === 'INSTANCE_OF' &&
+      (sourceFrame.type !== 'OBJECT' || targetFrame.type !== 'CLASS')
+    ) {
+      setError('Relacja INSTANCE_OF wymaga układu OBJECT -> CLASS.');
+      return;
+    }
 
     onSubmit({
       id: crypto.randomUUID(),
@@ -31,6 +65,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
     setTargetId('');
     setLabel('');
     setType('ASSOCIATION');
+    setError('');
   };
 
   return (
@@ -101,6 +136,12 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
           required
         />
       </div>
+
+      {error && (
+        <div className='rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700'>
+          {error}
+        </div>
+      )}
 
       <div className='flex justify-end gap-3'>
         <button
