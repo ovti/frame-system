@@ -19,11 +19,22 @@ function FrameCard({ frame, onClick }: FrameCardProps) {
         </div>
 
         <span className='rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700'>
-          {frame.relations.length} relacji
+          {frame.slots.length} klatek
         </span>
       </div>
 
-      <p className='text-sm text-slate-600'>{frame.description}</p>
+      <p className='mb-4 text-sm text-slate-600'>{frame.description}</p>
+
+      <div className='flex flex-wrap gap-2'>
+        {frame.slots.slice(0, 3).map((slot) => (
+          <span
+            key={slot.id}
+            className='rounded-full bg-slate-200 px-3 py-1 text-xs font-medium text-slate-700'
+          >
+            {slot.name}
+          </span>
+        ))}
+      </div>
     </button>
   );
 }

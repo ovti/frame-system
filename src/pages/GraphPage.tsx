@@ -1,11 +1,16 @@
+import GraphCanvas from '../components/graph/GraphCanvas';
+
 function GraphPage() {
   return (
     <div>
-      <h2 className='mb-4 text-3xl font-bold'>Graf</h2>
-
-      <div className='flex min-h-[500px] items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-white'>
-        <p className='text-slate-500'>Tutaj będzie widok grafu</p>
+      <div className='mb-6'>
+        <h2 className='text-3xl font-bold'>Graf</h2>
+        <p className='mt-1 text-slate-500'>
+          Wizualizacja ramek i relacji w postaci grafu
+        </p>
       </div>
+
+      <GraphCanvas />
     </div>
   );
 }
