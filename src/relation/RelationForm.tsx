@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { Frame } from '../../types/frame';
-import type { Relation, RelationType } from '../../types/relation';
+import type { Frame } from '../types/frame';
+import type { Relation, RelationType } from '../types/relation';
 
 interface RelationFormProps {
   frames: Frame[];
