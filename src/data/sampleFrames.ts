@@ -98,12 +98,12 @@ export const sampleFrames: Frame[] = [
           {
             id: 'aspect-10',
             type: 'VALUE',
-            value: 'Intel Core i7',
+            value: 'Apple M1 Pro',
           },
           {
             id: 'aspect-11',
             type: 'DEFAULT',
-            value: 'Intel Core i5',
+            value: 'Apple M1 Pro',
           },
         ],
       },
@@ -112,7 +112,7 @@ export const sampleFrames: Frame[] = [
   },
   {
     id: '3',
-    name: 'Laptop Dell XPS',
+    name: 'Laptop Macbook Pro',
     type: 'OBJECT',
     description: 'Konkretny egzemplarz laptopa.',
     parentIds: ['2'],
@@ -125,7 +125,7 @@ export const sampleFrames: Frame[] = [
           {
             id: 'aspect-12',
             type: 'VALUE',
-            value: 'DXPS-2026-001',
+            value: 'C02ZQ0K6MD6L',
           },
         ],
       },
