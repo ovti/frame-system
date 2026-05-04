@@ -44,12 +44,26 @@ function RelationsPage() {
               className='flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm'
             >
               <div>
-                <p className='font-semibold text-slate-900'>{relation.label}</p>
+                <div className='mb-1 flex items-center gap-2'>
+                  <p className='font-semibold text-slate-900'>
+                    {relation.label}
+                  </p>
+
+                  {relation.category && (
+                    <span className='rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600'>
+                      {relation.category}
+                    </span>
+                  )}
+                </div>
+
                 <p className='text-sm text-slate-500'>
                   {getFrameName(relation.sourceId)} →{' '}
                   {getFrameName(relation.targetId)}
                 </p>
-                <p className='text-xs text-slate-400'>Typ: {relation.type}</p>
+
+                <p className='text-xs text-slate-400'>
+                  Typ techniczny: {relation.type}
+                </p>
               </div>
 
               <button
