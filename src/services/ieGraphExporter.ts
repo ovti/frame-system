@@ -7,23 +7,83 @@ interface IndexedNode {
   label: string;
 }
 
-interface IndexedEdge {
-  sourceIndex: number;
-  targetIndex: number;
+interface IEGraphNode {
+  id: string;
+  index: number;
   label: string;
+  frameType: Frame['type'];
+  attributes: {
+    description: string;
+    slots: Frame['slots'];
+  };
+}
+
+interface IEGraphEdge {
+  id: string;
+  source: number;
+  target: number;
+  label: string;
+  original: {
+    sourceId: string;
+    targetId: string;
+    label: string;
+    type: Relation['type'];
+    directionPreserved: boolean;
+  };
+}
+
+interface CharacteristicDescriptionItem {
+  index: number;
+  nodeId: string;
+  label: string;
+  outDegree: number;
+  edgeLabels: string[];
+  targetIndices: number[];
+}
+
+interface IEGraphJson {
+  format: 'IE_GRAPH_JSON';
+  version: '1.0';
+  graph: {
+    V: IEGraphNode[];
+    E: IEGraphEdge[];
+    Sigma: string[];
+    Gamma: string[];
+    phi: Record<string, string>;
+  };
+  indexing: {
+    scheme: 'LOTT_BFS';
+    order: IndexedNode[];
+  };
+  characteristicDescription: CharacteristicDescriptionItem[];
+  interpretation: {
+    entities: Frame[];
+    relations: Relation[];
+  };
 }
 
 interface ExportResult {
   text: string;
+  json: IEGraphJson;
   order: IndexedNode[];
-  edges: IndexedEdge[];
+  edges: IEGraphEdge[];
 }
 
 function getNodeLabel(frame: Frame): string {
   return frame.name;
 }
 
-function buildAdjacency(frames: Frame[], relations: Relation[]) {
+function getInverseLabel(label: string): string {
+  const symmetricLabels = ['małżonek', 'malzonek', 'spouse'];
+
+  if (symmetricLabels.includes(label.toLowerCase())) {
+    return label;
+  }
+
+  return `${label}^-1`;
+}
+
+function buildUndirectedAdjacency(frames: Frame[], relations: Relation[]) {
   const adjacency = new Map<string, string[]>();
 
   frames.forEach((frame) => {
@@ -35,66 +95,64 @@ function buildAdjacency(frames: Frame[], relations: Relation[]) {
       adjacency.set(relation.sourceId, []);
     }
 
+    if (!adjacency.has(relation.targetId)) {
+      adjacency.set(relation.targetId, []);
+    }
+
     adjacency.get(relation.sourceId)?.push(relation.targetId);
+    adjacency.get(relation.targetId)?.push(relation.sourceId);
   });
 
   return adjacency;
 }
 
-function getRootFrames(frames: Frame[], relations: Relation[]) {
-  const incoming = new Map<string, number>();
+function getFrameSortValue(frame: Frame): string {
+  return `${frame.type}_${frame.name}_${frame.id}`;
+}
 
-  frames.forEach((frame) => {
-    incoming.set(frame.id, 0);
-  });
-
-  relations.forEach((relation) => {
-    incoming.set(relation.targetId, (incoming.get(relation.targetId) ?? 0) + 1);
-  });
-
-  return frames
-    .filter((frame) => (incoming.get(frame.id) ?? 0) === 0)
-    .sort((a, b) => a.name.localeCompare(b.name));
+function getStartFrames(frames: Frame[]) {
+  return [...frames].sort((a, b) =>
+    getFrameSortValue(a).localeCompare(getFrameSortValue(b)),
+  );
 }
 
 function getLottOrder(frames: Frame[], relations: Relation[]): IndexedNode[] {
   const frameMap = new Map(frames.map((frame) => [frame.id, frame]));
-  const adjacency = buildAdjacency(frames, relations);
-  const roots = getRootFrames(frames, relations);
+  const adjacency = buildUndirectedAdjacency(frames, relations);
+  const startFrames = getStartFrames(frames);
 
   const visited = new Set<string>();
   const orderedIds: string[] = [];
-  const queue: string[] = roots.map((frame) => frame.id);
 
-  while (queue.length > 0) {
-    const currentId = queue.shift();
+  for (const startFrame of startFrames) {
+    if (visited.has(startFrame.id)) continue;
 
-    if (!currentId || visited.has(currentId)) continue;
+    const queue: string[] = [startFrame.id];
 
-    visited.add(currentId);
-    orderedIds.push(currentId);
+    while (queue.length > 0) {
+      const currentId = queue.shift();
 
-    const neighbors = [...(adjacency.get(currentId) ?? [])].sort((a, b) => {
-      const frameA = frameMap.get(a);
-      const frameB = frameMap.get(b);
+      if (!currentId || visited.has(currentId)) continue;
 
-      return (frameA?.name ?? '').localeCompare(frameB?.name ?? '');
-    });
+      visited.add(currentId);
+      orderedIds.push(currentId);
 
-    neighbors.forEach((neighborId) => {
-      if (!visited.has(neighborId)) {
-        queue.push(neighborId);
-      }
-    });
+      const neighbors = [...(adjacency.get(currentId) ?? [])]
+        .filter((neighborId) => !visited.has(neighborId))
+        .sort((a, b) => {
+          const frameA = frameMap.get(a);
+          const frameB = frameMap.get(b);
+
+          return (frameA?.name ?? a).localeCompare(frameB?.name ?? b);
+        });
+
+      neighbors.forEach((neighborId) => {
+        if (!visited.has(neighborId) && !queue.includes(neighborId)) {
+          queue.push(neighborId);
+        }
+      });
+    }
   }
-
-  const remaining = frames
-    .filter((frame) => !visited.has(frame.id))
-    .sort((a, b) => a.name.localeCompare(b.name));
-
-  remaining.forEach((frame) => {
-    orderedIds.push(frame.id);
-  });
 
   return orderedIds.map((id, index) => {
     const frame = frameMap.get(id);
@@ -107,10 +165,10 @@ function getLottOrder(frames: Frame[], relations: Relation[]): IndexedNode[] {
   });
 }
 
-function orientEdgesByIndex(
+function buildIEEdges(
   relations: Relation[],
   nodeOrder: IndexedNode[],
-): IndexedEdge[] {
+): IEGraphEdge[] {
   const indexMap = new Map(nodeOrder.map((node) => [node.id, node.index]));
 
   return relations
@@ -120,98 +178,158 @@ function orientEdgesByIndex(
 
       if (!sourceIndex || !targetIndex) return null;
 
-      if (sourceIndex < targetIndex) {
+      const directionPreserved = sourceIndex < targetIndex;
+
+      if (directionPreserved) {
         return {
-          sourceIndex,
-          targetIndex,
+          id: relation.id,
+          source: sourceIndex,
+          target: targetIndex,
           label: relation.label,
+          original: {
+            sourceId: relation.sourceId,
+            targetId: relation.targetId,
+            label: relation.label,
+            type: relation.type,
+            directionPreserved: true,
+          },
         };
       }
 
       return {
-        sourceIndex: targetIndex,
-        targetIndex: sourceIndex,
-        label: relation.label,
+        id: relation.id,
+        source: targetIndex,
+        target: sourceIndex,
+        label: getInverseLabel(relation.label),
+        original: {
+          sourceId: relation.sourceId,
+          targetId: relation.targetId,
+          label: relation.label,
+          type: relation.type,
+          directionPreserved: false,
+        },
       };
     })
-    .filter((edge): edge is IndexedEdge => edge !== null);
+    .filter((edge): edge is IEGraphEdge => edge !== null)
+    .sort((a, b) => {
+      if (a.source !== b.source) return a.source - b.source;
+      return a.target - b.target;
+    });
 }
 
-export function exportToIEGraphText(
-  frames: Frame[],
-  relations: Relation[],
-): ExportResult {
-  const order = getLottOrder(frames, relations);
-  const edges = orientEdgesByIndex(relations, order);
-
-  const edgesBySource = new Map<number, IndexedEdge[]>();
+function buildCharacteristicDescription(
+  order: IndexedNode[],
+  edges: IEGraphEdge[],
+): CharacteristicDescriptionItem[] {
+  const edgesBySource = new Map<number, IEGraphEdge[]>();
 
   order.forEach((node) => {
     edgesBySource.set(node.index, []);
   });
 
   edges.forEach((edge) => {
-    edgesBySource.get(edge.sourceIndex)?.push(edge);
+    edgesBySource.get(edge.source)?.push(edge);
   });
 
-  order.forEach((node) => {
-    const nodeEdges = edgesBySource.get(node.index) ?? [];
+  return order.map((node) => {
+    const outgoingEdges = [...(edgesBySource.get(node.index) ?? [])].sort(
+      (a, b) => a.target - b.target,
+    );
 
-    nodeEdges.sort((a, b) => a.targetIndex - b.targetIndex);
+    return {
+      index: node.index,
+      nodeId: node.id,
+      label: node.label,
+      outDegree: outgoingEdges.length,
+      edgeLabels: outgoingEdges.map((edge) => edge.label),
+      targetIndices: outgoingEdges.map((edge) => edge.target),
+    };
   });
+}
 
-  const labelsLine = order.map((node) => node.label).join(' | ');
+function buildSigma(frames: Frame[]) {
+  return Array.from(new Set(frames.map((frame) => frame.name))).sort((a, b) =>
+    a.localeCompare(b),
+  );
+}
 
-  const countsLine = order
-    .map((node) => String((edgesBySource.get(node.index) ?? []).length))
-    .join(' | ');
+function buildGamma(edges: IEGraphEdge[]) {
+  return Array.from(new Set(edges.map((edge) => edge.label))).sort((a, b) =>
+    a.localeCompare(b),
+  );
+}
 
-  const edgeLabelsLine = order
-    .map((node) => {
-      const nodeEdges = edgesBySource.get(node.index) ?? [];
+function buildPhi(order: IndexedNode[]) {
+  return order.reduce<Record<string, string>>((result, node) => {
+    result[String(node.index)] = node.label;
+    return result;
+  }, {});
+}
 
-      return nodeEdges.length > 0
-        ? nodeEdges.map((edge) => edge.label).join(' ')
-        : '-';
+function buildIEGraphJson(frames: Frame[], relations: Relation[]): IEGraphJson {
+  const order = getLottOrder(frames, relations);
+  const edges = buildIEEdges(relations, order);
+  const indexMap = new Map(order.map((node) => [node.id, node.index]));
+
+  const V: IEGraphNode[] = frames
+    .map((frame) => {
+      const index = indexMap.get(frame.id);
+
+      if (!index) return null;
+
+      return {
+        id: frame.id,
+        index,
+        label: frame.name,
+        frameType: frame.type,
+        attributes: {
+          description: frame.description ?? '',
+          slots: frame.slots,
+        },
+      };
     })
-    .join(' | ');
-
-  const targetIndicesLine = order
-    .map((node) => {
-      const nodeEdges = edgesBySource.get(node.index) ?? [];
-
-      return nodeEdges.length > 0
-        ? nodeEdges.map((edge) => String(edge.targetIndex)).join(' ')
-        : '-';
-    })
-    .join(' | ');
-
-  const indexLegend = order
-    .map((node) => `${node.index}: ${node.label}`)
-    .join('\n');
-
-  const text = [
-    '# IE GRAPH EXPORT',
-    '',
-    '[INDEX -> NODE]',
-    indexLegend,
-    '',
-    '[LABELS]',
-    labelsLine,
-    '',
-    '[EDGE_COUNTS]',
-    countsLine,
-    '',
-    '[EDGE_LABELS]',
-    edgeLabelsLine,
-    '',
-    '[TARGET_INDICES]',
-    targetIndicesLine,
-  ].join('\n');
+    .filter((node): node is IEGraphNode => node !== null)
+    .sort((a, b) => a.index - b.index);
 
   return {
-    text,
-    order,
-    edges,
+    format: 'IE_GRAPH_JSON',
+    version: '1.0',
+    graph: {
+      V,
+      E: edges,
+      Sigma: buildSigma(frames),
+      Gamma: buildGamma(edges),
+      phi: buildPhi(order),
+    },
+    indexing: {
+      scheme: 'LOTT_BFS',
+      order,
+    },
+    characteristicDescription: buildCharacteristicDescription(order, edges),
+    interpretation: {
+      entities: frames,
+      relations,
+    },
   };
+}
+
+export function exportToIEGraphJson(
+  frames: Frame[],
+  relations: Relation[],
+): ExportResult {
+  const json = buildIEGraphJson(frames, relations);
+
+  return {
+    text: JSON.stringify(json, null, 2),
+    json,
+    order: json.indexing.order,
+    edges: json.graph.E,
+  };
+}
+
+export function exportToIEGraphText(
+  frames: Frame[],
+  relations: Relation[],
+): ExportResult {
+  return exportToIEGraphJson(frames, relations);
 }

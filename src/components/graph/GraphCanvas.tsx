@@ -18,6 +18,14 @@ import FrameDetailsModal from '../frame/FrameDetailsModal';
 const NODE_WIDTH = 220;
 const NODE_HEIGHT = 80;
 
+const HIERARCHY_LABELS = ['dziecko', 'syn', 'córka'];
+
+function isHierarchyEdge(edge: Edge) {
+  const label = String(edge.label ?? '').toLowerCase();
+
+  return HIERARCHY_LABELS.includes(label);
+}
+
 function getLayoutedElements(
   nodes: Node[],
   edges: Edge[],
@@ -28,10 +36,10 @@ function getLayoutedElements(
   dagreGraph.setDefaultEdgeLabel(() => ({}));
   dagreGraph.setGraph({
     rankdir: direction,
-    nodesep: 40,
-    ranksep: 80,
-    marginx: 20,
-    marginy: 20,
+    nodesep: 80,
+    ranksep: 120,
+    marginx: 40,
+    marginy: 40,
   });
 
   nodes.forEach((node) => {
@@ -41,8 +49,8 @@ function getLayoutedElements(
     });
   });
 
-  edges.forEach((edge) => {
-    dagreGraph.setEdge(edge.target, edge.source);
+  edges.filter(isHierarchyEdge).forEach((edge) => {
+    dagreGraph.setEdge(edge.source, edge.target);
   });
 
   dagre.layout(dagreGraph);
@@ -82,24 +90,33 @@ function GraphCanvas() {
         width: NODE_WIDTH,
         borderRadius: 16,
         padding: 12,
-        border:
-          frame.type === 'CLASS' ? '2px solid #0f172a' : '2px solid #94a3b8',
-        background: frame.type === 'CLASS' ? '#e2e8f0' : '#ffffff',
+        border: '2px solid #94a3b8',
+        background: '#ffffff',
         fontWeight: 600,
       },
     }));
 
-    const baseEdges: Edge[] = relations.map((relation) => ({
-      id: relation.id,
-      source: relation.sourceId,
-      target: relation.targetId,
-      label: relation.label,
-      type: 'step',
-      animated: relation.type === 'INHERITS_FROM',
-      markerEnd: {
-        type: MarkerType.ArrowClosed,
-      },
-    }));
+    const baseEdges: Edge[] = relations.map((relation) => {
+      const isSpouseRelation = relation.label.toLowerCase() === 'małżonek';
+      const isChildRelation = relation.label.toLowerCase() === 'dziecko';
+
+      return {
+        id: relation.id,
+        source: relation.sourceId,
+        target: relation.targetId,
+        label: relation.label,
+        type: isSpouseRelation ? 'straight' : 'step',
+        animated: false,
+        markerEnd: isChildRelation
+          ? {
+              type: MarkerType.ArrowClosed,
+            }
+          : undefined,
+        style: {
+          strokeWidth: isSpouseRelation ? 2 : 2,
+        },
+      };
+    });
 
     return getLayoutedElements(baseNodes, baseEdges, 'TB');
   }, [frames, relations]);
