@@ -1,11 +1,11 @@
 import { NavLink } from 'react-router-dom';
 
 const navItems = [
-  { path: '/', label: 'Dashboard' },
-  { path: '/graph', label: 'Graf' },
-  { path: '/frames', label: 'Ramki' },
-  { path: '/relations', label: 'Relacje' },
-  { path: '/export', label: 'Eksport' },
+  { path: '/app', label: 'Dashboard' },
+  { path: '/app/graph', label: 'Graf' },
+  { path: '/app/frames', label: 'Ramki' },
+  { path: '/app/relations', label: 'Relacje' },
+  { path: '/app/export', label: 'Eksport' },
 ];
 
 function Sidebar() {
@@ -16,6 +16,7 @@ function Sidebar() {
           <NavLink
             key={item.path}
             to={item.path}
+            end={item.path === '/app'}
             className={({ isActive }) =>
               `rounded-lg px-4 py-2 transition ${
                 isActive
