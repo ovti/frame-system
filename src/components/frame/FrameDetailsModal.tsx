@@ -35,16 +35,16 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
           </div>
 
           <p className='mt-2 text-slate-600'>
-            {frame.description || 'Brak opisu'}
+            {frame.description || 'No description'}
           </p>
         </div>
 
         <div className='grid gap-4 md:grid-cols-2'>
           <div className='rounded-xl border border-slate-200 p-4'>
-            <h4 className='mb-2 font-semibold text-slate-900'>Dziedziczy po</h4>
+            <h4 className='mb-2 font-semibold text-slate-900'>Inherits from</h4>
 
             {frame.parentIds.length === 0 ? (
-              <p className='text-slate-500'>Brak nadrzędnych ramek</p>
+              <p className='text-slate-500'>No parent frames</p>
             ) : (
               <div className='flex flex-wrap gap-2'>
                 {frame.parentIds.map((parentId) => (
@@ -60,12 +60,10 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
           </div>
 
           <div className='rounded-xl border border-slate-200 p-4'>
-            <h4 className='mb-2 font-semibold text-slate-900'>
-              Ramki podrzędne
-            </h4>
+            <h4 className='mb-2 font-semibold text-slate-900'>Child frames</h4>
 
             {frame.childIds.length === 0 ? (
-              <p className='text-slate-500'>Brak podrzędnych ramek</p>
+              <p className='text-slate-500'>No child frames</p>
             ) : (
               <div className='flex flex-wrap gap-2'>
                 {frame.childIds.map((childId) => (
@@ -82,7 +80,7 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
         </div>
 
         <div>
-          <h4 className='mb-4 text-lg font-semibold text-slate-900'>Klatki</h4>
+          <h4 className='mb-4 text-lg font-semibold text-slate-900'>Slots</h4>
 
           <div className='space-y-4'>
             {frame.slots.map((slot) => (
@@ -96,7 +94,7 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                   </h5>
 
                   <span className='rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600'>
-                    {slot.aspects.length} aspektów
+                    {slot.aspects.length} aspects
                   </span>
                 </div>
 
@@ -118,7 +116,7 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                 {slot.demons && slot.demons.length > 0 && (
                   <div className='mt-4 border-t border-slate-200 pt-4'>
                     <h6 className='mb-2 font-semibold text-slate-900'>
-                      Demony
+                      Demons
                     </h6>
 
                     <div className='space-y-2'>
@@ -145,10 +143,12 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
         </div>
 
         <div>
-          <h4 className='mb-4 text-lg font-semibold text-slate-900'>Relacje</h4>
+          <h4 className='mb-4 text-lg font-semibold text-slate-900'>
+            Relations
+          </h4>
 
           {relatedRelations.length === 0 ? (
-            <p className='text-slate-500'>Brak relacji</p>
+            <p className='text-slate-500'>No relations</p>
           ) : (
             <div className='space-y-2'>
               {relatedRelations.map((relation) => (
@@ -164,7 +164,7 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                   </p>
 
                   <p className='mt-1 text-xs text-slate-400'>
-                    Typ: {relation.type}
+                    Type: {relation.type}
                   </p>
                 </div>
               ))}

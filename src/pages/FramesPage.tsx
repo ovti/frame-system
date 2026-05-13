@@ -29,7 +29,9 @@ function FramesPage() {
   };
 
   const handleDeleteFrame = (frameId: string) => {
-    const confirmed = window.confirm('Czy na pewno chcesz usunąć tę ramkę?');
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this frame?',
+    );
 
     if (!confirmed) return;
 
@@ -44,9 +46,9 @@ function FramesPage() {
     <div>
       <div className='mb-6 flex items-center justify-between'>
         <div>
-          <h2 className='text-3xl font-bold'>Ramki</h2>
+          <h2 className='text-3xl font-bold'>Frames</h2>
           <p className='mt-1 text-slate-500'>
-            Lista wszystkich ramek w systemie
+            List of all frames in the system
           </p>
         </div>
 
@@ -54,13 +56,13 @@ function FramesPage() {
           onClick={() => setIsCreateModalOpen(true)}
           className='rounded-xl bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-700'
         >
-          Dodaj ramkę
+          Add frame
         </button>
       </div>
 
       {frames.length === 0 ? (
         <div className='rounded-2xl bg-white p-6 shadow-sm'>
-          <p className='text-slate-500'>Brak ramek.</p>
+          <p className='text-slate-500'>No frames available.</p>
         </div>
       ) : (
         <div className='grid gap-4 md:grid-cols-2 xl:grid-cols-3'>
@@ -86,11 +88,9 @@ function FramesPage() {
         onClose={() => setIsCreateModalOpen(false)}
       >
         <div className='mb-6'>
-          <h2 className='text-2xl font-bold text-slate-900'>
-            Dodaj nową ramkę
-          </h2>
+          <h2 className='text-2xl font-bold text-slate-900'>Add a new frame</h2>
 
-          <p className='mt-1 text-slate-500'>Utwórz nową klasę lub obiekt</p>
+          <p className='mt-1 text-slate-500'>Create a new class or object</p>
         </div>
 
         <FrameForm

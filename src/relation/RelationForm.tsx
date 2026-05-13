@@ -44,17 +44,17 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
     setError('');
 
     if (!sourceId || !targetId) {
-      setError('Wybierz ramkę źródłową i docelową.');
+      setError('Select the source and target frame.');
       return;
     }
 
     if (sourceId === targetId) {
-      setError('Nie można utworzyć relacji ramki do samej siebie.');
+      setError('A frame cannot be related to itself.');
       return;
     }
 
     if (!selectedPreset) {
-      setError('Wybierz typ relacji.');
+      setError('Select a relation type.');
       return;
     }
 
@@ -62,7 +62,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
     const targetFrame = frames.find((frame) => frame.id === targetId);
 
     if (!sourceFrame || !targetFrame) {
-      setError('Nie znaleziono wybranych ramek.');
+      setError('The selected frames could not be found.');
       return;
     }
 
@@ -70,7 +70,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
       selectedPreset.type === 'INHERITS_FROM' &&
       (sourceFrame.type !== 'CLASS' || targetFrame.type !== 'CLASS')
     ) {
-      setError('Relacja dziedziczenia jest dozwolona tylko między klasami.');
+      setError('The inheritance relation is allowed only between classes.');
       return;
     }
 
@@ -78,7 +78,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
       selectedPreset.type === 'INSTANCE_OF' &&
       (sourceFrame.type !== 'OBJECT' || targetFrame.type !== 'CLASS')
     ) {
-      setError('Relacja instancji wymaga układu OBJECT → CLASS.');
+      setError('The instance relation requires the OBJECT → CLASS structure.');
       return;
     }
 
@@ -102,7 +102,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
     <form onSubmit={handleSubmit} className='space-y-4'>
       <div>
         <label className='mb-1 block text-sm font-medium text-slate-700'>
-          Zestaw relacji
+          Relation set
         </label>
 
         <select
@@ -126,7 +126,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
 
       <div>
         <label className='mb-1 block text-sm font-medium text-slate-700'>
-          Relacja
+          Relation
         </label>
 
         <select
@@ -148,7 +148,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
 
       <div>
         <label className='mb-1 block text-sm font-medium text-slate-700'>
-          Rama źródłowa
+          Source frame
         </label>
 
         <select
@@ -157,7 +157,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
           className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
           required
         >
-          <option value=''>Wybierz ramkę źródłową</option>
+          <option value=''>Select source frame</option>
           {frames.map((frame) => (
             <option key={frame.id} value={frame.id}>
               {frame.name}
@@ -168,7 +168,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
 
       <div>
         <label className='mb-1 block text-sm font-medium text-slate-700'>
-          Rama docelowa
+          Target frame
         </label>
 
         <select
@@ -177,7 +177,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
           className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
           required
         >
-          <option value=''>Wybierz ramkę docelową</option>
+          <option value=''>Select target frame</option>
           {frames.map((frame) => (
             <option key={frame.id} value={frame.id}>
               {frame.name}
@@ -188,15 +188,15 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
 
       {selectedPreset && (
         <div className='rounded-xl bg-slate-50 p-4 text-sm text-slate-600'>
-          <p className='font-medium text-slate-900'>Podgląd relacji</p>
+          <p className='font-medium text-slate-900'>Relation preview</p>
           <p className='mt-1'>
             {sourceId
               ? frames.find((frame) => frame.id === sourceId)?.name
-              : 'Źródło'}{' '}
+              : 'Source'}{' '}
             → {selectedPreset.label} →{' '}
             {targetId
               ? frames.find((frame) => frame.id === targetId)?.name
-              : 'Cel'}
+              : 'Target'}
           </p>
         </div>
       )}
@@ -213,14 +213,14 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
           onClick={onCancel}
           className='rounded-xl border border-slate-300 px-4 py-2 text-slate-700 transition hover:bg-slate-100'
         >
-          Anuluj
+          Cancel
         </button>
 
         <button
           type='submit'
           className='rounded-xl bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-700'
         >
-          Zapisz relację
+          Save relation
         </button>
       </div>
     </form>

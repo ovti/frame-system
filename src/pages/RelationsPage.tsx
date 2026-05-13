@@ -20,22 +20,22 @@ function RelationsPage() {
     <div>
       <div className='mb-6 flex items-center justify-between'>
         <div>
-          <h2 className='text-3xl font-bold'>Relacje</h2>
-          <p className='mt-1 text-slate-500'>Połączenia pomiędzy ramkami</p>
+          <h2 className='text-3xl font-bold'>Relations</h2>
+          <p className='mt-1 text-slate-500'>Connections between frames</p>
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
           className='rounded-xl bg-slate-900 px-4 py-2 text-white'
         >
-          Dodaj relację
+          Add relation
         </button>
       </div>
 
       <div className='space-y-3'>
         {relations.length === 0 ? (
           <div className='rounded-2xl bg-white p-6 shadow-sm'>
-            <p className='text-slate-500'>Brak relacji.</p>
+            <p className='text-slate-500'>No relations available.</p>
           </div>
         ) : (
           relations.map((relation) => (
@@ -62,7 +62,7 @@ function RelationsPage() {
                 </p>
 
                 <p className='text-xs text-slate-400'>
-                  Typ techniczny: {relation.type}
+                  Technical type: {relation.type}
                 </p>
               </div>
 
@@ -70,7 +70,7 @@ function RelationsPage() {
                 onClick={() => deleteRelation(relation.id)}
                 className='rounded-lg border border-red-200 px-3 py-2 text-red-600 hover:bg-red-50'
               >
-                Usuń
+                Delete
               </button>
             </div>
           ))
@@ -79,7 +79,7 @@ function RelationsPage() {
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className='mb-6'>
-          <h2 className='text-2xl font-bold text-slate-900'>Dodaj relację</h2>
+          <h2 className='text-2xl font-bold text-slate-900'>Add relation</h2>
         </div>
 
         <RelationForm

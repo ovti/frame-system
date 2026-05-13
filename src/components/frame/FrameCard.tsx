@@ -22,11 +22,11 @@ function FrameCard({ frame, onClick, onDelete }: FrameCardProps) {
         <div>
           <h3 className='text-xl font-bold text-slate-900'>{frame.name}</h3>
 
-          <p className='mt-1 text-sm text-slate-500'>Typ: {frame.type}</p>
+          <p className='mt-1 text-sm text-slate-500'>Type: {frame.type}</p>
         </div>
 
         <span className='rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700'>
-          {frame.slots.length} klatek
+          {frame.slots.length} slots
         </span>
       </div>
 
@@ -49,7 +49,7 @@ function FrameCard({ frame, onClick, onDelete }: FrameCardProps) {
           onClick={handleDeleteClick}
           className='rounded-lg border border-red-200 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50'
         >
-          Usuń
+          Delete
         </button>
       </div>
     </div>

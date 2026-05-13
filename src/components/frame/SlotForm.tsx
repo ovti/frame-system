@@ -88,20 +88,20 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
   return (
     <div className='space-y-5 rounded-2xl border border-slate-200 p-4'>
       <div className='flex items-center justify-between gap-4'>
-        <h4 className='font-semibold text-slate-900'>Klatka</h4>
+        <h4 className='font-semibold text-slate-900'>Slot</h4>
 
         <button
           type='button'
           onClick={onRemove}
           className='rounded-lg border border-red-200 px-3 py-2 text-sm text-red-600 hover:bg-red-50'
         >
-          Usuń klatkę
+          Remove slot
         </button>
       </div>
 
       <div>
         <label className='mb-1 block text-sm font-medium text-slate-700'>
-          Nazwa klatki
+          Slot name
         </label>
 
         <input
@@ -114,26 +114,26 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
             })
           }
           className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
-          placeholder='Np. Napięcie elektryczne'
+          placeholder='E.g. Voltage'
           required
         />
       </div>
 
       <div className='space-y-3'>
         <div className='flex items-center justify-between'>
-          <h5 className='font-medium text-slate-900'>Aspekty</h5>
+          <h5 className='font-medium text-slate-900'>Aspects</h5>
 
           <button
             type='button'
             onClick={handleAddAspect}
             className='rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100'
           >
-            Dodaj aspekt
+            Add aspect
           </button>
         </div>
 
         {slot.aspects.length === 0 ? (
-          <p className='text-sm text-slate-500'>Brak aspektów.</p>
+          <p className='text-sm text-slate-500'>No aspects.</p>
         ) : (
           <div className='space-y-3'>
             {slot.aspects.map((aspect) => (
@@ -160,7 +160,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                     handleAspectChange(aspect.id, 'value', event.target.value)
                   }
                   className='rounded-lg border border-slate-300 px-3 py-2'
-                  placeholder='Np. 230 V'
+                  placeholder='E.g. 230 V'
                   required
                 />
 
@@ -169,7 +169,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                   onClick={() => handleRemoveAspect(aspect.id)}
                   className='rounded-lg border border-red-200 px-3 py-2 text-red-600 hover:bg-red-50'
                 >
-                  Usuń
+                  Remove
                 </button>
               </div>
             ))}
@@ -179,19 +179,19 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
 
       <div className='space-y-3 border-t border-slate-200 pt-4'>
         <div className='flex items-center justify-between'>
-          <h5 className='font-medium text-slate-900'>Demony</h5>
+          <h5 className='font-medium text-slate-900'>Demons</h5>
 
           <button
             type='button'
             onClick={handleAddDemon}
             className='rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100'
           >
-            Dodaj demona
+            Add demon
           </button>
         </div>
 
         {(slot.demons ?? []).length === 0 ? (
-          <p className='text-sm text-slate-500'>Brak demonów.</p>
+          <p className='text-sm text-slate-500'>No demons.</p>
         ) : (
           <div className='space-y-3'>
             {(slot.demons ?? []).map((demon) => (
@@ -225,7 +225,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                     )
                   }
                   className='rounded-lg border border-amber-200 px-3 py-2'
-                  placeholder='Opis działania demona'
+                  placeholder='Describe the demon behavior'
                   required
                 />
 
@@ -234,7 +234,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                   onClick={() => handleRemoveDemon(demon.id)}
                   className='rounded-lg border border-red-200 px-3 py-2 text-red-600 hover:bg-red-50'
                 >
-                  Usuń
+                  Remove
                 </button>
               </div>
             ))}

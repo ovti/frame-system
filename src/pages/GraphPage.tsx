@@ -6,7 +6,7 @@ function GraphPage() {
       <div className='mb-6'>
         <h2 className='text-3xl font-bold'>Graf</h2>
         <p className='mt-1 text-slate-500'>
-          Wizualizacja ramek i relacji w postaci grafu
+          Visualization of the created frame system and relations between frames
         </p>
       </div>
 

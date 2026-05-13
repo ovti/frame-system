@@ -12,22 +12,22 @@ function HomePage() {
 
       <div className='grid gap-4 md:grid-cols-2 xl:grid-cols-4'>
         <div className='rounded-2xl bg-white p-6 shadow-sm'>
-          <h3 className='text-lg font-semibold'>Liczba ramek</h3>
+          <h3 className='text-lg font-semibold'>Number of frames</h3>
           <p className='mt-2 text-3xl font-bold'>{frames.length}</p>
         </div>
 
         <div className='rounded-2xl bg-white p-6 shadow-sm'>
-          <h3 className='text-lg font-semibold'>Liczba relacji</h3>
+          <h3 className='text-lg font-semibold'>Number of relations</h3>
           <p className='mt-2 text-3xl font-bold'>{relations.length}</p>
         </div>
 
         <div className='rounded-2xl bg-white p-6 shadow-sm'>
-          <h3 className='text-lg font-semibold'>Klasy</h3>
+          <h3 className='text-lg font-semibold'>Classes</h3>
           <p className='mt-2 text-3xl font-bold'>{classCount}</p>
         </div>
 
         <div className='rounded-2xl bg-white p-6 shadow-sm'>
-          <h3 className='text-lg font-semibold'>Obiekty</h3>
+          <h3 className='text-lg font-semibold'>Objects</h3>
           <p className='mt-2 text-3xl font-bold'>{objectCount}</p>
         </div>
       </div>

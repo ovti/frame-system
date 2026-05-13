@@ -4,31 +4,31 @@ const functionalities = [
   {
     title: 'Dashboard',
     description:
-      'Podstawowe podsumowanie aktualnego grafu, liczby ramek, relacji, klas i obiektów.',
+      'A basic summary of the current graph, including the number of frames, relations, classes, and objects.',
     path: '/app/dashboard',
   },
   {
-    title: 'Wizualizacja grafu',
+    title: 'Graph visualization',
     description:
-      'Widok graficzny utworzonego systemu ramek i relacji w postaci grafu.',
+      'A graphical view of the created frame system and its relations represented as a graph.',
     path: '/app/graph',
   },
   {
-    title: 'Tworzenie ramek',
+    title: 'Frame creation',
     description:
-      'Dodawanie ramek reprezentujących obiekty lub klasy wraz z klatkami, aspektami i demonami.',
+      'Adding frames that represent objects or classes, including slots, aspects, and demons.',
     path: '/app/frames',
   },
   {
-    title: 'Tworzenie relacji',
+    title: 'Relation creation',
     description:
-      'Definiowanie połączeń między ramkami z wykorzystaniem wybranych zestawów relacji, np. więzi rodzinnych.',
+      'Defining connections between frames using selected relation sets, such as family relations.',
     path: '/app/relations',
   },
   {
-    title: 'Eksport IE graph',
+    title: 'IE graph export',
     description:
-      'Eksport utworzonego grafu do tekstowej reprezentacji JSON zgodnej z ideą grafu IE.',
+      'Exporting the created graph to a JSON text representation based on the IE graph model.',
     path: '/app/export',
   },
 ];
@@ -42,9 +42,9 @@ function ModuleFunctionalitiesPage() {
         </h2>
 
         <p className='mt-2 max-w-3xl text-slate-500'>
-          W tej części aplikacji dostępne są funkcje umożliwiające tworzenie
-          systemu ramowego, definiowanie relacji między ramkami, wizualizację
-          grafu oraz eksport wyniku do reprezentacji IE graph.
+          This part of the application provides tools for creating a frame
+          system, defining relations between frames, visualizing the graph, and
+          exporting the result to an IE graph representation.
         </p>
       </div>
 
@@ -64,7 +64,7 @@ function ModuleFunctionalitiesPage() {
             </p>
 
             <p className='mt-5 text-sm font-semibold text-slate-900'>
-              Przejdź →
+              Go to section →
             </p>
           </Link>
         ))}

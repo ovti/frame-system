@@ -63,7 +63,7 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
     <form onSubmit={handleSubmit} className='space-y-5'>
       <div>
         <label className='mb-1 block text-sm font-medium text-slate-700'>
-          Nazwa ramki
+          Frame name
         </label>
 
         <input
@@ -71,14 +71,14 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
           value={name}
           onChange={(event) => setName(event.target.value)}
           className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
-          placeholder='Np. Komputer'
+          placeholder='E.g. Computer'
           required
         />
       </div>
 
       <div>
         <label className='mb-1 block text-sm font-medium text-slate-700'>
-          Typ ramki
+          Frame type
         </label>
 
         <select
@@ -93,23 +93,23 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
 
       <div>
         <label className='mb-1 block text-sm font-medium text-slate-700'>
-          Opis
+          Description
         </label>
 
         <textarea
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           className='min-h-[120px] w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
-          placeholder='Krótki opis ramki'
+          placeholder='Short frame description'
         />
       </div>
 
       <div className='space-y-4 border-t border-slate-200 pt-4'>
         <div className='flex items-center justify-between'>
           <div>
-            <h3 className='text-lg font-semibold text-slate-900'>Klatki</h3>
+            <h3 className='text-lg font-semibold text-slate-900'>Slots</h3>
             <p className='text-sm text-slate-500'>
-              Dodaj cechy ramki oraz ich aspekty.
+              Add frame features and their aspects.
             </p>
           </div>
 
@@ -118,13 +118,13 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
             onClick={handleAddSlot}
             className='rounded-xl border border-slate-300 px-4 py-2 text-slate-700 transition hover:bg-slate-100'
           >
-            Dodaj klatkę
+            Add slot
           </button>
         </div>
 
         {slots.length === 0 ? (
           <p className='rounded-xl bg-slate-50 p-4 text-sm text-slate-500'>
-            Brak klatek. Możesz utworzyć ramkę bez klatek albo dodać je teraz.
+            No slots. You can create a frame without slots or add them now.
           </p>
         ) : (
           <div className='space-y-4'>
@@ -148,14 +148,14 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
           onClick={onCancel}
           className='rounded-xl border border-slate-300 px-4 py-2 text-slate-700 transition hover:bg-slate-100'
         >
-          Anuluj
+          Cancel
         </button>
 
         <button
           type='submit'
           className='rounded-xl bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-700'
         >
-          Zapisz ramkę
+          Save frame
         </button>
       </div>
     </form>

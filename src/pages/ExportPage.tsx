@@ -19,7 +19,7 @@ function ExportPage() {
         setCopied(false);
       }, 2000);
     } catch (error) {
-      console.error('Nie udało się skopiować eksportu:', error);
+      console.error('Failed to copy export:', error);
     }
   };
 
@@ -27,9 +27,9 @@ function ExportPage() {
     <div>
       <div className='mb-6 flex items-center justify-between'>
         <div>
-          <h2 className='text-3xl font-bold'>Eksport</h2>
+          <h2 className='text-3xl font-bold'>Export</h2>
           <p className='mt-1 text-slate-500'>
-            Eksport grafu do tekstowej reprezentacji IE graph
+            Export the graph to a textual IE graph representation
           </p>
         </div>
 
@@ -37,7 +37,7 @@ function ExportPage() {
           onClick={handleCopy}
           className='rounded-xl bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-700'
         >
-          {copied ? 'Skopiowano' : 'Kopiuj eksport'}
+          {copied ? 'Copied' : 'Copy export'}
         </button>
       </div>
 

@@ -1,12 +1,12 @@
 import { NavLink } from 'react-router-dom';
 
 const navItems = [
-  { path: '/app', label: 'Funkcje modułu', end: true },
+  { path: '/app', label: 'Module functionalities', end: true },
   { path: '/app/dashboard', label: 'Dashboard' },
-  { path: '/app/graph', label: 'Graf' },
-  { path: '/app/frames', label: 'Ramki' },
-  { path: '/app/relations', label: 'Relacje' },
-  { path: '/app/export', label: 'Eksport' },
+  { path: '/app/graph', label: 'Graph' },
+  { path: '/app/frames', label: 'Frames' },
+  { path: '/app/relations', label: 'Relations' },
+  { path: '/app/export', label: 'Export' },
 ];
 
 function Sidebar() {
