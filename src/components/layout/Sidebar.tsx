@@ -7,6 +7,7 @@ const navItems = [
   { path: '/app/frames', label: 'Frames' },
   { path: '/app/relations', label: 'Relations' },
   { path: '/app/export', label: 'Export' },
+  { path: '/app/info', label: 'Info' },
 ];
 
 function Sidebar() {

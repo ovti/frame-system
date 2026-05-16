@@ -4,12 +4,12 @@ import ExportPage from './pages/ExportPage';
 import FramesPage from './pages/FramesPage';
 import GraphPage from './pages/GraphPage';
 import HomePage from './pages/HomePage';
+import InfoPage from './pages/InfoPage';
 import LandingPage from './pages/LandingPage';
 import ModuleFunctionalitiesPage from './pages/ModuleFunctionalitiesPage';
 import NotFoundPage from './pages/NotFoundPage';
 import RelationsPage from './pages/RelationsPage';
 import './styles/App.css';
-
 function App() {
   return (
     <Routes>
@@ -22,6 +22,7 @@ function App() {
         <Route path='frames' element={<FramesPage />} />
         <Route path='relations' element={<RelationsPage />} />
         <Route path='export' element={<ExportPage />} />
+        <Route path='info' element={<InfoPage />} />
       </Route>
 
       <Route path='*' element={<NotFoundPage />} />

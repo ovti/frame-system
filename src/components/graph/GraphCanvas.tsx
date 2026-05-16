@@ -18,12 +18,32 @@ import FrameDetailsModal from '../frame/FrameDetailsModal';
 const NODE_WIDTH = 220;
 const NODE_HEIGHT = 80;
 
-const HIERARCHY_LABELS = ['dziecko', 'syn', 'córka'];
+const CHILD_RELATION_LABELS = [
+  'child',
+  'son',
+  'daughter',
+  'dziecko',
+  'syn',
+  'córka',
+];
+const SPOUSE_RELATION_LABELS = ['spouse', 'małżonek', 'malzonek'];
+
+function normalizeLabel(label: unknown) {
+  return String(label ?? '')
+    .trim()
+    .toLowerCase();
+}
+
+function isChildRelationLabel(label: unknown) {
+  return CHILD_RELATION_LABELS.includes(normalizeLabel(label));
+}
+
+function isSpouseRelationLabel(label: unknown) {
+  return SPOUSE_RELATION_LABELS.includes(normalizeLabel(label));
+}
 
 function isHierarchyEdge(edge: Edge) {
-  const label = String(edge.label ?? '').toLowerCase();
-
-  return HIERARCHY_LABELS.includes(label);
+  return isChildRelationLabel(edge.label);
 }
 
 function getLayoutedElements(
@@ -36,10 +56,10 @@ function getLayoutedElements(
   dagreGraph.setDefaultEdgeLabel(() => ({}));
   dagreGraph.setGraph({
     rankdir: direction,
-    nodesep: 80,
-    ranksep: 120,
-    marginx: 40,
-    marginy: 40,
+    nodesep: 120,
+    ranksep: 140,
+    marginx: 80,
+    marginy: 80,
   });
 
   nodes.forEach((node) => {
@@ -97,15 +117,15 @@ function GraphCanvas() {
     }));
 
     const baseEdges: Edge[] = relations.map((relation) => {
-      const isSpouseRelation = relation.label.toLowerCase() === 'małżonek';
-      const isChildRelation = relation.label.toLowerCase() === 'dziecko';
+      const isSpouseRelation = isSpouseRelationLabel(relation.label);
+      const isChildRelation = isChildRelationLabel(relation.label);
 
       return {
         id: relation.id,
         source: relation.sourceId,
         target: relation.targetId,
         label: relation.label,
-        type: isSpouseRelation ? 'straight' : 'step',
+        type: isSpouseRelation ? 'straight' : 'smoothstep',
         animated: false,
         markerEnd: isChildRelation
           ? {
@@ -113,7 +133,7 @@ function GraphCanvas() {
             }
           : undefined,
         style: {
-          strokeWidth: isSpouseRelation ? 2 : 2,
+          strokeWidth: 2,
         },
       };
     });

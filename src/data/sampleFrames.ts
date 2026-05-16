@@ -5,29 +5,29 @@ export const sampleFrames: Frame[] = [
     id: 'anna',
     name: 'Anna',
     type: 'OBJECT',
-    description: 'Osoba w przykładowym grafie rodzinnym.',
+    description: 'A person in the sample family graph.',
     parentIds: [],
     childIds: ['piotr'],
     slots: [
       {
         id: 'slot-anna-1',
-        name: 'Płeć',
+        name: 'Gender',
         aspects: [
           {
             id: 'aspect-anna-1',
             type: 'VALUE',
-            value: 'kobieta',
+            value: 'female',
           },
         ],
       },
       {
         id: 'slot-anna-2',
-        name: 'Rola w przykładzie',
+        name: 'Role in example',
         aspects: [
           {
             id: 'aspect-anna-2',
             type: 'VALUE',
-            value: 'matka',
+            value: 'mother',
           },
         ],
       },
@@ -38,29 +38,29 @@ export const sampleFrames: Frame[] = [
     id: 'jan',
     name: 'Jan',
     type: 'OBJECT',
-    description: 'Osoba w przykładowym grafie rodzinnym.',
+    description: 'A person in the sample family graph.',
     parentIds: [],
     childIds: ['piotr'],
     slots: [
       {
         id: 'slot-jan-1',
-        name: 'Płeć',
+        name: 'Gender',
         aspects: [
           {
             id: 'aspect-jan-1',
             type: 'VALUE',
-            value: 'mężczyzna',
+            value: 'male',
           },
         ],
       },
       {
         id: 'slot-jan-2',
-        name: 'Rola w przykładzie',
+        name: 'Role in example',
         aspects: [
           {
             id: 'aspect-jan-2',
             type: 'VALUE',
-            value: 'ojciec',
+            value: 'father',
           },
         ],
       },
@@ -71,29 +71,29 @@ export const sampleFrames: Frame[] = [
     id: 'piotr',
     name: 'Piotr',
     type: 'OBJECT',
-    description: 'Syn Anny i Jana.',
+    description: 'The son of Anna and Jan.',
     parentIds: ['anna', 'jan'],
     childIds: [],
     slots: [
       {
         id: 'slot-piotr-1',
-        name: 'Płeć',
+        name: 'Gender',
         aspects: [
           {
             id: 'aspect-piotr-1',
             type: 'VALUE',
-            value: 'mężczyzna',
+            value: 'male',
           },
         ],
       },
       {
         id: 'slot-piotr-2',
-        name: 'Rola w przykładzie',
+        name: 'Role in example',
         aspects: [
           {
             id: 'aspect-piotr-2',
             type: 'VALUE',
-            value: 'syn',
+            value: 'son',
           },
         ],
       },
