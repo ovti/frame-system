@@ -14,6 +14,9 @@ function ExportPage() {
   const { frames, relations } = useFrameStore();
   const [copied, setCopied] = useState(false);
   const [fileName, setFileName] = useState('ie-graph-export');
+  const [saveStatus, setSaveStatus] = useState('');
+  const [savedFileUrl, setSavedFileUrl] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const exportResult = useMemo(() => {
     return exportToIEGraphText(frames, relations);
@@ -47,6 +50,42 @@ function ExportPage() {
     link.click();
 
     URL.revokeObjectURL(url);
+  };
+
+  const handleSaveToServer = async () => {
+    setIsSaving(true);
+    setSaveStatus('Saving...');
+    setSavedFileUrl('');
+
+    try {
+      const response = await fetch(
+        '/~21_zalubski/frame-system/api/save-export.php',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fileName: normalizedFileName,
+            content: exportResult.text,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to save file.');
+      }
+
+      setSaveStatus('Saved on server.');
+      setSavedFileUrl(data.fileUrl);
+    } catch (error) {
+      console.error('Failed to save export:', error);
+      setSaveStatus('Failed to save on server.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -89,6 +128,15 @@ function ExportPage() {
           >
             Download JSON
           </button>
+
+          <button
+            type='button'
+            onClick={handleSaveToServer}
+            disabled={isSaving}
+            className='rounded-xl border border-slate-300 px-4 py-2 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60'
+          >
+            {isSaving ? 'Saving...' : 'Save on server'}
+          </button>
         </div>
       </div>
 
@@ -99,6 +147,27 @@ function ExportPage() {
         </span>
         .
       </div>
+
+      {saveStatus && (
+        <div className='mb-4 rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-600'>
+          {saveStatus}
+
+          {savedFileUrl && (
+            <>
+              {' '}
+              File link:{' '}
+              <a
+                href={savedFileUrl}
+                target='_blank'
+                rel='noreferrer'
+                className='font-mono font-semibold text-slate-900 underline'
+              >
+                {savedFileUrl}
+              </a>
+            </>
+          )}
+        </div>
+      )}
 
       <div className='rounded-2xl bg-white p-6 shadow-sm'>
         <textarea

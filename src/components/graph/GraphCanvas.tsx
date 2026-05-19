@@ -6,17 +6,22 @@ import {
   MiniMap,
   Position,
   ReactFlow,
+  applyNodeChanges,
+  useEdgesState,
+  useNodesState,
   type Edge,
   type Node,
+  type NodeChange,
   type NodeMouseHandler,
 } from '@xyflow/react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useFrameStore } from '../../store/frameStore';
 import type { Frame } from '../../types/frame';
 import FrameDetailsModal from '../frame/FrameDetailsModal';
+import PersonNode from './PersonNode';
 
 const NODE_WIDTH = 220;
-const NODE_HEIGHT = 80;
+const NODE_HEIGHT = 88;
 
 const CHILD_RELATION_LABELS = [
   'child',
@@ -26,7 +31,12 @@ const CHILD_RELATION_LABELS = [
   'syn',
   'córka',
 ];
+
 const SPOUSE_RELATION_LABELS = ['spouse', 'małżonek', 'malzonek'];
+
+const nodeTypes = {
+  person: PersonNode,
+};
 
 function normalizeLabel(label: unknown) {
   return String(label ?? '')
@@ -54,6 +64,7 @@ function getLayoutedElements(
   const dagreGraph = new dagre.graphlib.Graph();
 
   dagreGraph.setDefaultEdgeLabel(() => ({}));
+
   dagreGraph.setGraph({
     rankdir: direction,
     nodesep: 120,
@@ -91,58 +102,123 @@ function getLayoutedElements(
     };
   });
 
-  return { nodes: layoutedNodes, edges };
+  return {
+    nodes: layoutedNodes,
+    edges,
+  };
 }
 
-function GraphCanvas() {
-  const { frames, relations } = useFrameStore();
-  const [selectedFrame, setSelectedFrame] = useState<Frame | null>(null);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+function assignEdgeHandles(edges: Edge[], nodes: Node[]) {
+  const nodePositionMap = new Map(
+    nodes.map((node) => [node.id, node.position]),
+  );
 
-  const { nodes, edges } = useMemo(() => {
-    const baseNodes: Node[] = frames.map((frame) => ({
-      id: frame.id,
-      data: {
-        label: frame.name,
-      },
-      position: { x: 0, y: 0 },
-      style: {
-        width: NODE_WIDTH,
-        borderRadius: 16,
-        padding: 12,
-        border: '2px solid #94a3b8',
-        background: '#ffffff',
-        fontWeight: 600,
-      },
-    }));
+  return edges.map((edge) => {
+    const isSpouseRelation = isSpouseRelationLabel(edge.label);
+    const isChildRelation = isChildRelationLabel(edge.label);
 
-    const baseEdges: Edge[] = relations.map((relation) => {
-      const isSpouseRelation = isSpouseRelationLabel(relation.label);
-      const isChildRelation = isChildRelationLabel(relation.label);
+    if (isSpouseRelation) {
+      const sourcePosition = nodePositionMap.get(edge.source);
+      const targetPosition = nodePositionMap.get(edge.target);
+
+      const isSourceOnLeft =
+        sourcePosition && targetPosition
+          ? sourcePosition.x <= targetPosition.x
+          : true;
 
       return {
-        id: relation.id,
-        source: relation.sourceId,
-        target: relation.targetId,
-        label: relation.label,
-        type: isSpouseRelation ? 'straight' : 'smoothstep',
-        animated: false,
-        markerEnd: isChildRelation
-          ? {
-              type: MarkerType.ArrowClosed,
-            }
-          : undefined,
+        ...edge,
+        type: 'straight',
+        sourceHandle: isSourceOnLeft ? 'right-source' : 'left-source',
+        targetHandle: isSourceOnLeft ? 'left-target' : 'right-target',
+        markerEnd: undefined,
         style: {
           strokeWidth: 2,
         },
       };
-    });
+    }
 
-    return getLayoutedElements(baseNodes, baseEdges, 'TB');
+    if (isChildRelation) {
+      return {
+        ...edge,
+        type: 'smoothstep',
+        sourceHandle: 'bottom-source',
+        targetHandle: 'top-target',
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+        },
+        style: {
+          strokeWidth: 2,
+        },
+      };
+    }
+
+    return {
+      ...edge,
+      type: 'smoothstep',
+      sourceHandle: 'bottom-source',
+      targetHandle: 'top-target',
+      style: {
+        strokeWidth: 2,
+      },
+    };
+  });
+}
+
+function GraphCanvas() {
+  const { frames, relations } = useFrameStore();
+
+  const [selectedFrame, setSelectedFrame] = useState<Frame | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
+  const [nodes, setNodes] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+
+  const graphElements = useMemo(() => {
+    const baseNodes: Node[] = frames.map((frame) => ({
+      id: frame.id,
+      type: 'person',
+      data: {
+        label: frame.name,
+        type: frame.type,
+      },
+      position: { x: 0, y: 0 },
+    }));
+
+    const baseEdges: Edge[] = relations.map((relation) => ({
+      id: relation.id,
+      source: relation.sourceId,
+      target: relation.targetId,
+      label: relation.label,
+      animated: false,
+    }));
+
+    const layoutedElements = getLayoutedElements(baseNodes, baseEdges, 'TB');
+
+    return {
+      nodes: layoutedElements.nodes,
+      edges: assignEdgeHandles(layoutedElements.edges, layoutedElements.nodes),
+    };
   }, [frames, relations]);
+
+  useEffect(() => {
+    setNodes(graphElements.nodes);
+    setEdges(graphElements.edges);
+  }, [graphElements, setNodes, setEdges]);
+
+  const handleNodesChange = (changes: NodeChange<Node>[]) => {
+    setNodes((currentNodes) => {
+      const updatedNodes = applyNodeChanges(changes, currentNodes);
+
+      setEdges((currentEdges) => assignEdgeHandles(currentEdges, updatedNodes));
+
+      return updatedNodes;
+    });
+  };
 
   const handleNodeClick: NodeMouseHandler = (_, node) => {
     const frame = frames.find((item) => item.id === node.id) ?? null;
+
     setSelectedFrame(frame);
     setIsDetailsOpen(true);
   };
@@ -158,10 +234,13 @@ function GraphCanvas() {
         <ReactFlow
           nodes={nodes}
           edges={edges}
+          nodeTypes={nodeTypes}
           fitView
-          nodesDraggable={false}
+          nodesDraggable
           nodesConnectable={false}
           elementsSelectable
+          onNodesChange={handleNodesChange}
+          onEdgesChange={onEdgesChange}
           onNodeClick={handleNodeClick}
         >
           <Background />
