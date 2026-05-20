@@ -7,7 +7,7 @@ function Navbar() {
         to='/'
         className='inline-block text-3xl font-bold text-slate-950 transition hover:text-slate-700'
       >
-        Frame System
+        GRAGRAFRAME
       </Link>
     </header>
   );
