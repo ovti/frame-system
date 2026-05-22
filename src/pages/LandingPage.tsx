@@ -11,7 +11,7 @@ function LandingPage() {
 
       <section className='relative z-10 flex min-h-[420px] w-full max-w-5xl items-center justify-center overflow-hidden rounded-3xl bg-white/90 px-5 py-14 text-center shadow-sm backdrop-blur-sm sm:min-h-[440px] sm:px-8 sm:py-16 md:min-h-[480px] md:px-12 md:py-20'>
         <img
-          src='/images/main4.png'
+          src='/~21_zalubski/gragraframe/images/main4.png'
           alt=''
           aria-hidden='true'
           className='pointer-events-none absolute left-1/2 top-1/2 z-0 h-[340px] w-[430px] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain opacity-[0.10] blur-[1px] sm:h-[430px] sm:w-[540px] md:h-[500px] md:w-[640px]'

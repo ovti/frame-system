@@ -13,6 +13,7 @@ import {
   type NodeChange,
   type NodeMouseHandler,
 } from '@xyflow/react';
+import ELK from 'elkjs/lib/elk.bundled.js';
 import { useEffect, useMemo, useState } from 'react';
 import { useFrameStore } from '../../store/frameStore';
 import type { Frame } from '../../types/frame';
@@ -25,6 +26,8 @@ const NODE_WIDTH = 170;
 const NODE_HEIGHT = 68;
 const HANDLE_SLOTS = 5;
 const CENTER_HANDLE_SLOT = 2;
+
+const elk = new ELK();
 
 const nodeTypes = {
   person: PersonNode,
@@ -67,25 +70,22 @@ function hasMechanicalGraph(edges: Edge[]) {
   return edges.some(isMechanicalEdge);
 }
 
-function isLayoutEdge(edge: Edge) {
+function isTreeEdge(edge: Edge) {
   return getEdgeLayoutRole(edge) === 'TREE';
 }
 
-function getLayoutedElements(
-  nodes: Node[],
-  edges: Edge[],
-  direction: 'TB' | 'LR' = 'TB',
-) {
+function getDagreLayoutedElements(nodes: Node[], edges: Edge[]) {
   const dagreGraph = new dagre.graphlib.Graph();
 
   dagreGraph.setDefaultEdgeLabel(() => ({}));
 
   dagreGraph.setGraph({
-    rankdir: direction,
-    nodesep: 220,
-    ranksep: 180,
-    marginx: 140,
-    marginy: 110,
+    rankdir: 'TB',
+    nodesep: 240,
+    ranksep: 170,
+    marginx: 120,
+    marginy: 100,
+    ranker: 'network-simplex',
   });
 
   nodes.forEach((node) => {
@@ -95,24 +95,24 @@ function getLayoutedElements(
     });
   });
 
-  edges.filter(isLayoutEdge).forEach((edge) => {
+  edges.filter(isTreeEdge).forEach((edge) => {
     dagreGraph.setEdge(edge.source, edge.target);
   });
 
   dagre.layout(dagreGraph);
 
   const layoutedNodes = nodes.map((node) => {
-    const nodeWithPosition = dagreGraph.node(node.id);
+    const layoutedNode = dagreGraph.node(node.id);
 
-    if (!nodeWithPosition) {
+    if (!layoutedNode) {
       return node;
     }
 
     return {
       ...node,
       position: {
-        x: nodeWithPosition.x - NODE_WIDTH / 2,
-        y: nodeWithPosition.y - NODE_HEIGHT / 2,
+        x: layoutedNode.x - NODE_WIDTH / 2,
+        y: layoutedNode.y - NODE_HEIGHT / 2,
       },
     };
   });
@@ -123,230 +123,77 @@ function getLayoutedElements(
   };
 }
 
-function getMechanicalLayoutedElements(nodes: Node[], edges: Edge[]) {
-  const treeEdges = edges.filter((edge) => getEdgeLayoutRole(edge) === 'TREE');
-  const nonTreeEdges = edges.filter(
-    (edge) => getEdgeLayoutRole(edge) !== 'TREE',
+async function getElkLayoutedElements(nodes: Node[], edges: Edge[]) {
+  const graph = {
+    id: 'root',
+    layoutOptions: {
+      'elk.algorithm': 'layered',
+      'elk.direction': 'DOWN',
+      'elk.edgeRouting': 'ORTHOGONAL',
+
+      'elk.spacing.nodeNode': '190',
+      'elk.spacing.edgeEdge': '60',
+      'elk.spacing.edgeNode': '75',
+      'elk.layered.spacing.nodeNodeBetweenLayers': '190',
+      'elk.layered.spacing.edgeNodeBetweenLayers': '90',
+      'elk.layered.spacing.edgeEdgeBetweenLayers': '70',
+
+      'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
+      'elk.layered.nodePlacement.strategy': 'NETWORK_SIMPLEX',
+      'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES',
+      'elk.layered.unnecessaryBendpoints': 'true',
+      'elk.layered.mergeEdges': 'false',
+      'elk.padding': '[top=100,left=150,bottom=100,right=150]',
+    },
+    children: nodes.map((node) => ({
+      id: node.id,
+      width: NODE_WIDTH,
+      height: NODE_HEIGHT,
+    })),
+    edges: edges.map((edge) => ({
+      id: edge.id,
+      sources: [edge.source],
+      targets: [edge.target],
+    })),
+  };
+
+  const layoutedGraph = await elk.layout(graph);
+
+  const positionMap = new Map(
+    layoutedGraph.children?.map((node) => [
+      node.id,
+      {
+        x: node.x ?? 0,
+        y: node.y ?? 0,
+      },
+    ]),
   );
 
-  const nodeIds = new Set(nodes.map((node) => node.id));
-  const incomingTreeCount = new Map<string, number>();
+  const layoutedNodes = nodes.map((node) => {
+    const position = positionMap.get(node.id);
 
-  nodes.forEach((node) => {
-    incomingTreeCount.set(node.id, 0);
-  });
+    if (!position) {
+      return node;
+    }
 
-  treeEdges.forEach((edge) => {
-    incomingTreeCount.set(
-      edge.target,
-      (incomingTreeCount.get(edge.target) ?? 0) + 1,
-    );
-  });
-
-  const roots = nodes.filter(
-    (node) => (incomingTreeCount.get(node.id) ?? 0) === 0,
-  );
-
-  const mainRoot = roots[0] ?? nodes[0];
-
-  if (!mainRoot) {
     return {
-      nodes,
-      edges,
+      ...node,
+      position,
     };
-  }
-
-  const rootIds = new Set(roots.map((root) => root.id));
-
-  const nonRootNodeIds = nodes
-    .map((node) => node.id)
-    .filter((nodeId) => !rootIds.has(nodeId));
-
-  const adjacency = new Map<string, Set<string>>();
-
-  nonRootNodeIds.forEach((nodeId) => {
-    adjacency.set(nodeId, new Set<string>());
-  });
-
-  edges.forEach((edge) => {
-    if (!nodeIds.has(edge.source) || !nodeIds.has(edge.target)) {
-      return;
-    }
-
-    if (rootIds.has(edge.source) || rootIds.has(edge.target)) {
-      return;
-    }
-
-    adjacency.get(edge.source)?.add(edge.target);
-    adjacency.get(edge.target)?.add(edge.source);
-  });
-
-  const visited = new Set<string>();
-  const components: string[][] = [];
-
-  nonRootNodeIds.forEach((nodeId) => {
-    if (visited.has(nodeId)) {
-      return;
-    }
-
-    const component: string[] = [];
-    const queue = [nodeId];
-
-    visited.add(nodeId);
-
-    while (queue.length > 0) {
-      const currentId = queue.shift();
-
-      if (!currentId) {
-        continue;
-      }
-
-      component.push(currentId);
-
-      adjacency.get(currentId)?.forEach((neighborId) => {
-        if (!visited.has(neighborId)) {
-          visited.add(neighborId);
-          queue.push(neighborId);
-        }
-      });
-    }
-
-    components.push(component);
-  });
-
-  const outgoingScore = new Map<string, number>();
-
-  nodes.forEach((node) => {
-    outgoingScore.set(node.id, 0);
-  });
-
-  nonTreeEdges.forEach((edge) => {
-    outgoingScore.set(edge.source, (outgoingScore.get(edge.source) ?? 0) + 2);
-    outgoingScore.set(edge.target, (outgoingScore.get(edge.target) ?? 0) + 1);
-  });
-
-  treeEdges.forEach((edge) => {
-    outgoingScore.set(edge.source, (outgoingScore.get(edge.source) ?? 0) + 1);
-  });
-
-  components.sort((a, b) => {
-    const aScore = a.reduce(
-      (sum, nodeId) => sum + (outgoingScore.get(nodeId) ?? 0),
-      0,
-    );
-
-    const bScore = b.reduce(
-      (sum, nodeId) => sum + (outgoingScore.get(nodeId) ?? 0),
-      0,
-    );
-
-    if (aScore !== bScore) {
-      return bScore - aScore;
-    }
-
-    return a[0].localeCompare(b[0]);
-  });
-
-  const nodeMap = new Map(nodes.map((node) => [node.id, node]));
-
-  const rootY = 90;
-  const rootX = 720;
-  const componentGap = 520;
-  const componentTopY = 330;
-  const componentBottomY = 560;
-  const itemGap = 340;
-
-  const totalWidth = Math.max(0, (components.length - 1) * componentGap);
-  const startX = rootX - totalWidth / 2;
-
-  const positionedNodes = nodes.map((node) => {
-    if (node.id === mainRoot.id) {
-      return {
-        ...node,
-        position: {
-          x: rootX - NODE_WIDTH / 2,
-          y: rootY,
-        },
-      };
-    }
-
-    return node;
-  });
-
-  const positionedMap = new Map(positionedNodes.map((node) => [node.id, node]));
-
-  roots
-    .filter((root) => root.id !== mainRoot.id)
-    .forEach((root, index) => {
-      const x = rootX + (index + 1) * componentGap;
-
-      positionedMap.set(root.id, {
-        ...root,
-        position: {
-          x,
-          y: rootY,
-        },
-      });
-    });
-
-  components.forEach((component, componentIndex) => {
-    const componentCenterX = startX + componentIndex * componentGap;
-
-    const sortedComponent = [...component].sort((a, b) => {
-      const aScore = outgoingScore.get(a) ?? 0;
-      const bScore = outgoingScore.get(b) ?? 0;
-
-      if (aScore !== bScore) {
-        return bScore - aScore;
-      }
-
-      const nodeA = nodeMap.get(a);
-      const nodeB = nodeMap.get(b);
-
-      return String(nodeA?.data.label ?? a).localeCompare(
-        String(nodeB?.data.label ?? b),
-      );
-    });
-
-    const centralNodeId = sortedComponent[0];
-    const restNodeIds = sortedComponent.slice(1);
-
-    const centralNode = nodeMap.get(centralNodeId);
-
-    if (centralNode) {
-      positionedMap.set(centralNodeId, {
-        ...centralNode,
-        position: {
-          x: componentCenterX - NODE_WIDTH / 2,
-          y: componentTopY,
-        },
-      });
-    }
-
-    const rowWidth = Math.max(0, (restNodeIds.length - 1) * itemGap);
-    const rowStartX = componentCenterX - rowWidth / 2;
-
-    restNodeIds.forEach((nodeId, index) => {
-      const node = nodeMap.get(nodeId);
-
-      if (!node) {
-        return;
-      }
-
-      positionedMap.set(nodeId, {
-        ...node,
-        position: {
-          x: rowStartX + index * itemGap - NODE_WIDTH / 2,
-          y: componentBottomY,
-        },
-      });
-    });
   });
 
   return {
-    nodes: nodes.map((node) => positionedMap.get(node.id) ?? node),
+    nodes: layoutedNodes,
     edges,
   };
+}
+
+async function getLayoutedElements(nodes: Node[], edges: Edge[]) {
+  if (hasMechanicalGraph(edges)) {
+    return getElkLayoutedElements(nodes, edges);
+  }
+
+  return getDagreLayoutedElements(nodes, edges);
 }
 
 function applySavedPositions(
@@ -617,7 +464,7 @@ function GraphCanvas() {
   const [nodes, setNodes] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
-  const graphElements = useMemo(() => {
+  const baseGraphElements = useMemo(() => {
     const baseNodes: Node[] = frames.map((frame) => ({
       id: frame.id,
       type: 'person',
@@ -641,28 +488,45 @@ function GraphCanvas() {
       },
     }));
 
-    const layoutedElements = hasMechanicalGraph(baseEdges)
-      ? getMechanicalLayoutedElements(baseNodes, baseEdges)
-      : getLayoutedElements(baseNodes, baseEdges, 'TB');
-
-    const nodesWithSavedPositions = applySavedPositions(
-      layoutedElements.nodes,
-      nodePositions,
-    );
-
     return {
-      nodes: nodesWithSavedPositions,
-      edges: assignGenericEdgeHandles(
-        layoutedElements.edges,
-        nodesWithSavedPositions,
-      ),
+      nodes: baseNodes,
+      edges: baseEdges,
     };
-  }, [frames, relations, nodePositions]);
+  }, [frames, relations]);
 
   useEffect(() => {
-    setNodes(graphElements.nodes);
-    setEdges(graphElements.edges);
-  }, [graphElements, setNodes, setEdges]);
+    let isMounted = true;
+
+    async function layoutGraph() {
+      const layoutedElements = await getLayoutedElements(
+        baseGraphElements.nodes,
+        baseGraphElements.edges,
+      );
+
+      const nodesWithSavedPositions = applySavedPositions(
+        layoutedElements.nodes,
+        nodePositions,
+      );
+
+      if (!isMounted) {
+        return;
+      }
+
+      setNodes(nodesWithSavedPositions);
+      setEdges(
+        assignGenericEdgeHandles(
+          layoutedElements.edges,
+          nodesWithSavedPositions,
+        ),
+      );
+    }
+
+    layoutGraph();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [baseGraphElements, nodePositions, setNodes, setEdges]);
 
   const handleNodesChange = (changes: NodeChange<Node>[]) => {
     setNodes((currentNodes) => {

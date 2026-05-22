@@ -7,14 +7,19 @@ interface FrameFormProps {
   onCancel: () => void;
 }
 
+const FRAME_NAME_MAX_LENGTH = 60;
+const FRAME_DESCRIPTION_MAX_LENGTH = 300;
+const MAX_SLOTS_PER_FRAME = 12;
+
 function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
   const [name, setName] = useState('');
   const [type, setType] = useState<FrameType>('CLASS');
   const [description, setDescription] = useState('');
   const [slots, setSlots] = useState<FrameSlot[]>([]);
+  const [error, setError] = useState('');
 
   const secondaryButtonClass =
-    'w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 sm:w-auto';
+    'w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto';
 
   const primaryButtonClass =
     'w-full cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950 sm:w-auto';
@@ -22,7 +27,16 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
   const inputClass =
     'w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-300';
 
+  const helperTextClass = 'mt-1 text-xs text-slate-400';
+
   const handleAddSlot = () => {
+    setError('');
+
+    if (slots.length >= MAX_SLOTS_PER_FRAME) {
+      setError(`A frame can contain up to ${MAX_SLOTS_PER_FRAME} slots.`);
+      return;
+    }
+
     setSlots((previousSlots) => [
       ...previousSlots,
       {
@@ -41,6 +55,8 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
   };
 
   const handleRemoveSlot = (slotId: string) => {
+    setError('');
+
     setSlots((previousSlots) =>
       previousSlots.filter((slot) => slot.id !== slotId),
     );
@@ -48,12 +64,42 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError('');
+
+    const trimmedName = name.trim();
+    const trimmedDescription = description.trim();
+
+    if (!trimmedName) {
+      setError('Frame name is required.');
+      return;
+    }
+
+    if (trimmedName.length > FRAME_NAME_MAX_LENGTH) {
+      setError(
+        `Frame name can contain up to ${FRAME_NAME_MAX_LENGTH} characters.`,
+      );
+      return;
+    }
+
+    if (trimmedDescription.length > FRAME_DESCRIPTION_MAX_LENGTH) {
+      setError(
+        `Description can contain up to ${FRAME_DESCRIPTION_MAX_LENGTH} characters.`,
+      );
+      return;
+    }
+
+    const hasInvalidSlot = slots.some((slot) => !slot.name.trim());
+
+    if (hasInvalidSlot) {
+      setError('Each slot must have a name.');
+      return;
+    }
 
     const newFrame: Frame = {
       id: crypto.randomUUID(),
-      name,
+      name: trimmedName,
       type,
-      description,
+      description: trimmedDescription,
       parentIds: [],
       childIds: [],
       slots,
@@ -66,6 +112,7 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
     setType('CLASS');
     setDescription('');
     setSlots([]);
+    setError('');
   };
 
   return (
@@ -78,11 +125,19 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
         <input
           type='text'
           value={name}
-          onChange={(event) => setName(event.target.value)}
+          onChange={(event) => {
+            setName(event.target.value);
+            setError('');
+          }}
           className={inputClass}
           placeholder='E.g. Computer'
+          maxLength={FRAME_NAME_MAX_LENGTH}
           required
         />
+
+        <p className={helperTextClass}>
+          {name.length}/{FRAME_NAME_MAX_LENGTH} characters
+        </p>
       </div>
 
       <div>
@@ -107,10 +162,18 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
 
         <textarea
           value={description}
-          onChange={(event) => setDescription(event.target.value)}
+          onChange={(event) => {
+            setDescription(event.target.value);
+            setError('');
+          }}
           className={`${inputClass} min-h-[110px] resize-y sm:min-h-[120px]`}
           placeholder='Short frame description'
+          maxLength={FRAME_DESCRIPTION_MAX_LENGTH}
         />
+
+        <p className={helperTextClass}>
+          {description.length}/{FRAME_DESCRIPTION_MAX_LENGTH} characters
+        </p>
       </div>
 
       <div className='space-y-4 border-t border-slate-200 pt-4'>
@@ -123,12 +186,17 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
             <p className='text-sm text-slate-500'>
               Add frame features and their aspects.
             </p>
+
+            <p className={helperTextClass}>
+              {slots.length}/{MAX_SLOTS_PER_FRAME} slots
+            </p>
           </div>
 
           <button
             type='button'
             onClick={handleAddSlot}
             className={secondaryButtonClass}
+            disabled={slots.length >= MAX_SLOTS_PER_FRAME}
           >
             Add slot
           </button>
@@ -153,6 +221,12 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
           </div>
         )}
       </div>
+
+      {error && (
+        <div className='rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700'>
+          {error}
+        </div>
+      )}
 
       <div className='flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end'>
         <button

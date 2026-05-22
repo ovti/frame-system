@@ -75,10 +75,6 @@ function RelationsPage() {
                 <div className='mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-400'>
                   <p>Technical type: {relation.type}</p>
 
-                  {relation.layoutRole && (
-                    <p>Layout role: {relation.layoutRole}</p>
-                  )}
-
                   {relation.relationName && <p>Edge label: {relation.label}</p>}
                 </div>
               </div>

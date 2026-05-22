@@ -7,7 +7,7 @@ import './styles/App.css';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     {/* <BrowserRouter> */}
-    <BrowserRouter basename='/~21_zalubski/frame-system'>
+    <BrowserRouter basename='/~21_zalubski/gragraframe'>
       <App />
     </BrowserRouter>
   </React.StrictMode>,

@@ -65,7 +65,7 @@ function ExportPage() {
 
     try {
       const response = await fetch(
-        '/~21_zalubski/frame-system/api/save-export.php',
+        '/~21_zalubski/gragraframe/api/save-export.php',
         {
           method: 'POST',
           headers: {

@@ -1,11 +1,11 @@
 <IfModule mod_rewrite.c>
   Options -MultiViews
   RewriteEngine On
-  RewriteBase /~21_zalubski/frame-system/
+  RewriteBase /~21_zalubski/gragraframe/
 
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  RewriteRule . /~21_zalubski/frame-system/index.html [L]
+  RewriteRule . /~21_zalubski/gragraframe/index.html [L]
 </IfModule>

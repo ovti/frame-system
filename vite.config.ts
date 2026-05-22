@@ -9,5 +9,5 @@ export default defineConfig({
     tailwindcss(),
     babel({ presets: [reactCompilerPreset()] }),
   ],
-  base: '/~21_zalubski/frame-system/',
+  base: '/~21_zalubski/gragraframe/',
 });

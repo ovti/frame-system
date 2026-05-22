@@ -190,10 +190,6 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                   <div className='mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-400'>
                     <p>Type: {relation.label}</p>
 
-                    {relation.layoutRole && (
-                      <p>Layout role: {relation.layoutRole}</p>
-                    )}
-
                     <p>Technical type: {relation.type}</p>
                   </div>
                 </div>
