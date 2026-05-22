@@ -4,14 +4,27 @@ import type { Frame } from '../../types/frame';
 interface FrameCardProps {
   frame: Frame;
   onClick: () => void;
+  onEdit: () => void;
   onDelete: () => void;
 }
 
-function FrameCard({ frame, onClick, onDelete }: FrameCardProps) {
+function FrameCard({ frame, onClick, onEdit, onDelete }: FrameCardProps) {
+  const handleEditClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    onEdit();
+  };
+
   const handleDeleteClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     onDelete();
   };
+
+  const getSlotCountLabel = (count: number) => {
+    return count === 1 ? '1 slot' : `${count} slots`;
+  };
+
+  const secondaryButtonClass =
+    'w-full cursor-pointer rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 sm:w-auto';
 
   const dangerButtonClass =
     'w-full cursor-pointer rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 shadow-sm transition hover:border-red-300 hover:bg-red-50 hover:shadow focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 active:bg-red-100 sm:w-auto';
@@ -31,7 +44,7 @@ function FrameCard({ frame, onClick, onDelete }: FrameCardProps) {
         </div>
 
         <span className='w-fit shrink-0 rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700'>
-          {frame.slots.length} slots
+          {getSlotCountLabel(frame.slots.length)}
         </span>
       </div>
 
@@ -56,7 +69,15 @@ function FrameCard({ frame, onClick, onDelete }: FrameCardProps) {
         )}
       </div>
 
-      <div className='flex justify-end'>
+      <div className='flex flex-col gap-2 sm:flex-row sm:justify-end'>
+        <button
+          type='button'
+          onClick={handleEditClick}
+          className={secondaryButtonClass}
+        >
+          Edit
+        </button>
+
         <button
           type='button'
           onClick={handleDeleteClick}

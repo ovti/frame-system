@@ -22,6 +22,10 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
     return frames.find((item) => item.id === frameId)?.name ?? frameId;
   };
 
+  const getAspectCountLabel = (count: number) => {
+    return count === 1 ? '1 aspect' : `${count} aspects`;
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className='space-y-6 sm:space-y-8'>
@@ -105,7 +109,7 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                     </h5>
 
                     <span className='w-fit shrink-0 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600 sm:text-sm'>
-                      {slot.aspects.length} aspects
+                      {getAspectCountLabel(slot.aspects.length)}
                     </span>
                   </div>
 

@@ -7,7 +7,7 @@ export const sampleFrames: Frame[] = [
     type: 'OBJECT',
     description: 'A person in the sample family graph.',
     parentIds: [],
-    childIds: ['piotr'],
+    childIds: [],
     slots: [
       {
         id: 'slot-anna-1',
@@ -40,7 +40,7 @@ export const sampleFrames: Frame[] = [
     type: 'OBJECT',
     description: 'A person in the sample family graph.',
     parentIds: [],
-    childIds: ['piotr'],
+    childIds: [],
     slots: [
       {
         id: 'slot-jan-1',
@@ -72,7 +72,7 @@ export const sampleFrames: Frame[] = [
     name: 'Piotr',
     type: 'OBJECT',
     description: 'The son of Anna and Jan.',
-    parentIds: ['anna', 'jan'],
+    parentIds: [],
     childIds: [],
     slots: [
       {
@@ -112,14 +112,7 @@ export const sampleFrames: Frame[] = [
 //     description:
 //       'A basic constructive solid represented by a rectangular cuboid.',
 //     parentIds: [],
-//     childIds: [
-//       'blind-slot-2',
-//       'blind-slot-3',
-//       'hole-4',
-//       'hole-5',
-//       'hole-6',
-//       'hole-7',
-//     ],
+//     childIds: [],
 //     slots: [
 //       {
 //         id: 'slot-rc-1-type',

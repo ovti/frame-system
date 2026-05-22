@@ -7,11 +7,14 @@ import { useFrameStore } from '../store/frameStore';
 import type { Frame } from '../types/frame';
 
 function FramesPage() {
-  const { frames, addFrame, deleteFrame } = useFrameStore();
+  const { frames, addFrame, updateFrame, deleteFrame } = useFrameStore();
 
   const [selectedFrame, setSelectedFrame] = useState<Frame | null>(null);
+  const [editedFrame, setEditedFrame] = useState<Frame | null>(null);
+
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const primaryButtonClass =
     'w-full cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950 sm:w-auto';
@@ -31,6 +34,26 @@ function FramesPage() {
     setIsCreateModalOpen(false);
   };
 
+  const handleOpenEdit = (frame: Frame) => {
+    setEditedFrame(frame);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEdit = () => {
+    setEditedFrame(null);
+    setIsEditModalOpen(false);
+  };
+
+  const handleUpdateFrame = (frame: Frame) => {
+    updateFrame(frame);
+
+    if (selectedFrame?.id === frame.id) {
+      setSelectedFrame(frame);
+    }
+
+    handleCloseEdit();
+  };
+
   const handleDeleteFrame = (frameId: string) => {
     const confirmed = window.confirm(
       'Are you sure you want to delete this frame?',
@@ -40,6 +63,10 @@ function FramesPage() {
 
     if (selectedFrame?.id === frameId) {
       handleCloseDetails();
+    }
+
+    if (editedFrame?.id === frameId) {
+      handleCloseEdit();
     }
 
     deleteFrame(frameId);
@@ -78,6 +105,7 @@ function FramesPage() {
               key={frame.id}
               frame={frame}
               onClick={() => handleOpenDetails(frame)}
+              onEdit={() => handleOpenEdit(frame)}
               onDelete={() => handleDeleteFrame(frame.id)}
             />
           ))}
@@ -107,6 +135,25 @@ function FramesPage() {
         <FrameForm
           onSubmit={handleCreateFrame}
           onCancel={() => setIsCreateModalOpen(false)}
+        />
+      </Modal>
+
+      <Modal isOpen={isEditModalOpen} onClose={handleCloseEdit}>
+        <div className='mb-6'>
+          <h2 className='text-xl font-bold text-slate-900 sm:text-2xl'>
+            Edit frame
+          </h2>
+
+          <p className='mt-1 text-sm text-slate-500 sm:text-base'>
+            Update frame data, slots, aspects, and demons
+          </p>
+        </div>
+
+        <FrameForm
+          key={editedFrame?.id ?? 'edit-frame'}
+          initialFrame={editedFrame}
+          onSubmit={handleUpdateFrame}
+          onCancel={handleCloseEdit}
         />
       </Modal>
     </div>

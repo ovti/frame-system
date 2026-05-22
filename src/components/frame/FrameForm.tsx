@@ -3,6 +3,7 @@ import type { Frame, FrameSlot, FrameType } from '../../types/frame';
 import SlotForm from './SlotForm';
 
 interface FrameFormProps {
+  initialFrame?: Frame | null;
   onSubmit: (frame: Frame) => void;
   onCancel: () => void;
 }
@@ -11,12 +12,20 @@ const FRAME_NAME_MAX_LENGTH = 60;
 const FRAME_DESCRIPTION_MAX_LENGTH = 300;
 const MAX_SLOTS_PER_FRAME = 12;
 
-function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
-  const [name, setName] = useState('');
-  const [type, setType] = useState<FrameType>('CLASS');
-  const [description, setDescription] = useState('');
-  const [slots, setSlots] = useState<FrameSlot[]>([]);
+function FrameForm({
+  initialFrame = null,
+  onSubmit,
+  onCancel,
+}: FrameFormProps) {
+  const [name, setName] = useState(initialFrame?.name ?? '');
+  const [type, setType] = useState<FrameType>(initialFrame?.type ?? 'CLASS');
+  const [description, setDescription] = useState(
+    initialFrame?.description ?? '',
+  );
+  const [slots, setSlots] = useState<FrameSlot[]>(initialFrame?.slots ?? []);
   const [error, setError] = useState('');
+
+  const isEditMode = Boolean(initialFrame);
 
   const secondaryButtonClass =
     'w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto';
@@ -95,23 +104,37 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
       return;
     }
 
-    const newFrame: Frame = {
-      id: crypto.randomUUID(),
+    const frame: Frame = {
+      id: initialFrame?.id ?? crypto.randomUUID(),
       name: trimmedName,
       type,
       description: trimmedDescription,
-      parentIds: [],
-      childIds: [],
-      slots,
-      relations: [],
+      parentIds: initialFrame?.parentIds ?? [],
+      childIds: initialFrame?.childIds ?? [],
+      slots: slots.map((slot) => ({
+        ...slot,
+        name: slot.name.trim(),
+        aspects: slot.aspects.map((aspect) => ({
+          ...aspect,
+          value: aspect.value.trim(),
+        })),
+        demons: (slot.demons ?? []).map((demon) => ({
+          ...demon,
+          description: demon.description.trim(),
+        })),
+      })),
+      relations: initialFrame?.relations ?? [],
     };
 
-    onSubmit(newFrame);
+    onSubmit(frame);
 
-    setName('');
-    setType('CLASS');
-    setDescription('');
-    setSlots([]);
+    if (!isEditMode) {
+      setName('');
+      setType('CLASS');
+      setDescription('');
+      setSlots([]);
+    }
+
     setError('');
   };
 
@@ -238,7 +261,7 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
         </button>
 
         <button type='submit' className={primaryButtonClass}>
-          Save frame
+          {isEditMode ? 'Save changes' : 'Save frame'}
         </button>
       </div>
     </form>
