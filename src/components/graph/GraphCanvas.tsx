@@ -4,7 +4,6 @@ import {
   Controls,
   MarkerType,
   MiniMap,
-  Position,
   ReactFlow,
   applyNodeChanges,
   useEdgesState,
@@ -12,11 +11,13 @@ import {
   type Edge,
   type Node,
   type NodeChange,
+  type NodeDragHandler,
   type NodeMouseHandler,
 } from '@xyflow/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useFrameStore } from '../../store/frameStore';
 import type { Frame } from '../../types/frame';
+import type { GraphNodePositions } from '../../types/graph';
 import type { RelationLayoutRole } from '../../types/relation';
 import FrameDetailsModal from '../frame/FrameDetailsModal';
 import PersonNode from './PersonNode';
@@ -59,8 +60,12 @@ function getEdgeLayoutRole(edge: Edge): RelationLayoutRole {
   return 'CROSS';
 }
 
-function isFamilyEdge(edge: Edge) {
-  return getEdgeData(edge).category === 'FAMILY';
+function isMechanicalEdge(edge: Edge) {
+  return getEdgeData(edge).category === 'MECHANICAL_PART';
+}
+
+function hasMechanicalGraph(edges: Edge[]) {
+  return edges.some(isMechanicalEdge);
 }
 
 function isLayoutEdge(edge: Edge) {
@@ -78,10 +83,10 @@ function getLayoutedElements(
 
   dagreGraph.setGraph({
     rankdir: direction,
-    nodesep: 130,
-    ranksep: 135,
-    marginx: 90,
-    marginy: 80,
+    nodesep: 220,
+    ranksep: 180,
+    marginx: 140,
+    marginy: 110,
   });
 
   nodes.forEach((node) => {
@@ -97,8 +102,6 @@ function getLayoutedElements(
 
   dagre.layout(dagreGraph);
 
-  const isHorizontal = direction === 'LR';
-
   const layoutedNodes = nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
 
@@ -108,8 +111,6 @@ function getLayoutedElements(
 
     return {
       ...node,
-      sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
-      targetPosition: isHorizontal ? Position.Left : Position.Top,
       position: {
         x: nodeWithPosition.x - NODE_WIDTH / 2,
         y: nodeWithPosition.y - NODE_HEIGHT / 2,
@@ -121,6 +122,250 @@ function getLayoutedElements(
     nodes: layoutedNodes,
     edges,
   };
+}
+
+function getMechanicalLayoutedElements(nodes: Node[], edges: Edge[]) {
+  const treeEdges = edges.filter((edge) => getEdgeLayoutRole(edge) === 'TREE');
+  const nonTreeEdges = edges.filter(
+    (edge) => getEdgeLayoutRole(edge) !== 'TREE',
+  );
+
+  const nodeIds = new Set(nodes.map((node) => node.id));
+  const incomingTreeCount = new Map<string, number>();
+
+  nodes.forEach((node) => {
+    incomingTreeCount.set(node.id, 0);
+  });
+
+  treeEdges.forEach((edge) => {
+    incomingTreeCount.set(
+      edge.target,
+      (incomingTreeCount.get(edge.target) ?? 0) + 1,
+    );
+  });
+
+  const roots = nodes.filter(
+    (node) => (incomingTreeCount.get(node.id) ?? 0) === 0,
+  );
+
+  const mainRoot = roots[0] ?? nodes[0];
+
+  if (!mainRoot) {
+    return {
+      nodes,
+      edges,
+    };
+  }
+
+  const rootIds = new Set(roots.map((root) => root.id));
+
+  const nonRootNodeIds = nodes
+    .map((node) => node.id)
+    .filter((nodeId) => !rootIds.has(nodeId));
+
+  const adjacency = new Map<string, Set<string>>();
+
+  nonRootNodeIds.forEach((nodeId) => {
+    adjacency.set(nodeId, new Set<string>());
+  });
+
+  edges.forEach((edge) => {
+    if (!nodeIds.has(edge.source) || !nodeIds.has(edge.target)) {
+      return;
+    }
+
+    if (rootIds.has(edge.source) || rootIds.has(edge.target)) {
+      return;
+    }
+
+    adjacency.get(edge.source)?.add(edge.target);
+    adjacency.get(edge.target)?.add(edge.source);
+  });
+
+  const visited = new Set<string>();
+  const components: string[][] = [];
+
+  nonRootNodeIds.forEach((nodeId) => {
+    if (visited.has(nodeId)) {
+      return;
+    }
+
+    const component: string[] = [];
+    const queue = [nodeId];
+
+    visited.add(nodeId);
+
+    while (queue.length > 0) {
+      const currentId = queue.shift();
+
+      if (!currentId) {
+        continue;
+      }
+
+      component.push(currentId);
+
+      adjacency.get(currentId)?.forEach((neighborId) => {
+        if (!visited.has(neighborId)) {
+          visited.add(neighborId);
+          queue.push(neighborId);
+        }
+      });
+    }
+
+    components.push(component);
+  });
+
+  const outgoingScore = new Map<string, number>();
+
+  nodes.forEach((node) => {
+    outgoingScore.set(node.id, 0);
+  });
+
+  nonTreeEdges.forEach((edge) => {
+    outgoingScore.set(edge.source, (outgoingScore.get(edge.source) ?? 0) + 2);
+    outgoingScore.set(edge.target, (outgoingScore.get(edge.target) ?? 0) + 1);
+  });
+
+  treeEdges.forEach((edge) => {
+    outgoingScore.set(edge.source, (outgoingScore.get(edge.source) ?? 0) + 1);
+  });
+
+  components.sort((a, b) => {
+    const aScore = a.reduce(
+      (sum, nodeId) => sum + (outgoingScore.get(nodeId) ?? 0),
+      0,
+    );
+
+    const bScore = b.reduce(
+      (sum, nodeId) => sum + (outgoingScore.get(nodeId) ?? 0),
+      0,
+    );
+
+    if (aScore !== bScore) {
+      return bScore - aScore;
+    }
+
+    return a[0].localeCompare(b[0]);
+  });
+
+  const nodeMap = new Map(nodes.map((node) => [node.id, node]));
+
+  const rootY = 90;
+  const rootX = 720;
+  const componentGap = 520;
+  const componentTopY = 330;
+  const componentBottomY = 560;
+  const itemGap = 340;
+
+  const totalWidth = Math.max(0, (components.length - 1) * componentGap);
+  const startX = rootX - totalWidth / 2;
+
+  const positionedNodes = nodes.map((node) => {
+    if (node.id === mainRoot.id) {
+      return {
+        ...node,
+        position: {
+          x: rootX - NODE_WIDTH / 2,
+          y: rootY,
+        },
+      };
+    }
+
+    return node;
+  });
+
+  const positionedMap = new Map(positionedNodes.map((node) => [node.id, node]));
+
+  roots
+    .filter((root) => root.id !== mainRoot.id)
+    .forEach((root, index) => {
+      const x = rootX + (index + 1) * componentGap;
+
+      positionedMap.set(root.id, {
+        ...root,
+        position: {
+          x,
+          y: rootY,
+        },
+      });
+    });
+
+  components.forEach((component, componentIndex) => {
+    const componentCenterX = startX + componentIndex * componentGap;
+
+    const sortedComponent = [...component].sort((a, b) => {
+      const aScore = outgoingScore.get(a) ?? 0;
+      const bScore = outgoingScore.get(b) ?? 0;
+
+      if (aScore !== bScore) {
+        return bScore - aScore;
+      }
+
+      const nodeA = nodeMap.get(a);
+      const nodeB = nodeMap.get(b);
+
+      return String(nodeA?.data.label ?? a).localeCompare(
+        String(nodeB?.data.label ?? b),
+      );
+    });
+
+    const centralNodeId = sortedComponent[0];
+    const restNodeIds = sortedComponent.slice(1);
+
+    const centralNode = nodeMap.get(centralNodeId);
+
+    if (centralNode) {
+      positionedMap.set(centralNodeId, {
+        ...centralNode,
+        position: {
+          x: componentCenterX - NODE_WIDTH / 2,
+          y: componentTopY,
+        },
+      });
+    }
+
+    const rowWidth = Math.max(0, (restNodeIds.length - 1) * itemGap);
+    const rowStartX = componentCenterX - rowWidth / 2;
+
+    restNodeIds.forEach((nodeId, index) => {
+      const node = nodeMap.get(nodeId);
+
+      if (!node) {
+        return;
+      }
+
+      positionedMap.set(nodeId, {
+        ...node,
+        position: {
+          x: rowStartX + index * itemGap - NODE_WIDTH / 2,
+          y: componentBottomY,
+        },
+      });
+    });
+  });
+
+  return {
+    nodes: nodes.map((node) => positionedMap.get(node.id) ?? node),
+    edges,
+  };
+}
+
+function applySavedPositions(
+  nodes: Node[],
+  nodePositions: GraphNodePositions,
+): Node[] {
+  return nodes.map((node) => {
+    const savedPosition = nodePositions[node.id];
+
+    if (!savedPosition) {
+      return node;
+    }
+
+    return {
+      ...node,
+      position: savedPosition,
+    };
+  });
 }
 
 function getNodeCenter(node: Node) {
@@ -280,43 +525,16 @@ function getLateralEdgeStyle() {
   };
 }
 
-function getFamilyTreeEdge(edge: Edge) {
-  return {
-    ...edge,
-    type: 'smoothstep',
-    sourceHandle: getHandleId('bottom', 'source', CENTER_HANDLE_SLOT),
-    targetHandle: getHandleId('top', 'target', CENTER_HANDLE_SLOT),
-    ...getBaseEdgeStyle(),
-  };
-}
-
-function getFamilyLateralEdge(edge: Edge, nodes: Node[]) {
-  const sourceNode = nodes.find((node) => node.id === edge.source);
-  const targetNode = nodes.find((node) => node.id === edge.target);
-
-  if (!sourceNode || !targetNode) {
-    return {
-      ...edge,
-      type: 'straight',
-      sourceHandle: getHandleId('right', 'source', CENTER_HANDLE_SLOT),
-      targetHandle: getHandleId('left', 'target', CENTER_HANDLE_SLOT),
-      ...getLateralEdgeStyle(),
-    };
+function getEdgeType(layoutRole: RelationLayoutRole) {
+  if (layoutRole === 'TREE') {
+    return 'smoothstep';
   }
 
-  const isSourceOnLeft = sourceNode.position.x <= targetNode.position.x;
+  if (layoutRole === 'LATERAL') {
+    return 'smoothstep';
+  }
 
-  return {
-    ...edge,
-    type: 'straight',
-    sourceHandle: isSourceOnLeft
-      ? getHandleId('right', 'source', CENTER_HANDLE_SLOT)
-      : getHandleId('left', 'source', CENTER_HANDLE_SLOT),
-    targetHandle: isSourceOnLeft
-      ? getHandleId('left', 'target', CENTER_HANDLE_SLOT)
-      : getHandleId('right', 'target', CENTER_HANDLE_SLOT),
-    ...getLateralEdgeStyle(),
-  };
+  return 'default';
 }
 
 function assignGenericEdgeHandles(edges: Edge[], nodes: Node[]) {
@@ -324,27 +542,18 @@ function assignGenericEdgeHandles(edges: Edge[], nodes: Node[]) {
 
   return edges.map((edge) => {
     const layoutRole = getEdgeLayoutRole(edge);
-
-    if (isFamilyEdge(edge)) {
-      if (layoutRole === 'LATERAL') {
-        return getFamilyLateralEdge(edge, nodes);
-      }
-
-      if (layoutRole === 'TREE') {
-        return getFamilyTreeEdge(edge);
-      }
-    }
-
     const sourceNode = nodes.find((node) => node.id === edge.source);
     const targetNode = nodes.find((node) => node.id === edge.target);
 
     if (!sourceNode || !targetNode) {
       return {
         ...edge,
-        type: 'default',
+        type: getEdgeType(layoutRole),
         sourceHandle: getHandleId('bottom', 'source', CENTER_HANDLE_SLOT),
         targetHandle: getHandleId('top', 'target', CENTER_HANDLE_SLOT),
-        ...getBaseEdgeStyle(),
+        ...(layoutRole === 'LATERAL'
+          ? getLateralEdgeStyle()
+          : getBaseEdgeStyle()),
       };
     }
 
@@ -378,16 +587,30 @@ function assignGenericEdgeHandles(edges: Edge[], nodes: Node[]) {
 
     return {
       ...edge,
-      type: layoutRole === 'TREE' ? 'smoothstep' : 'default',
+      type: getEdgeType(layoutRole),
       sourceHandle: getHandleId(sourceSide, 'source', sourceSlot),
       targetHandle: getHandleId(targetSide, 'target', targetSlot),
-      ...getBaseEdgeStyle(),
+      ...(layoutRole === 'LATERAL'
+        ? getLateralEdgeStyle()
+        : getBaseEdgeStyle()),
     };
   });
 }
 
+function getPositionsFromNodes(nodesToSave: Node[]): GraphNodePositions {
+  return nodesToSave.reduce<GraphNodePositions>((positions, node) => {
+    positions[node.id] = {
+      x: node.position.x,
+      y: node.position.y,
+    };
+
+    return positions;
+  }, {});
+}
+
 function GraphCanvas() {
-  const { frames, relations } = useFrameStore();
+  const { frames, relations, nodePositions, setNodePositions } =
+    useFrameStore();
 
   const [selectedFrame, setSelectedFrame] = useState<Frame | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -419,16 +642,23 @@ function GraphCanvas() {
       },
     }));
 
-    const layoutedElements = getLayoutedElements(baseNodes, baseEdges, 'TB');
+    const layoutedElements = hasMechanicalGraph(baseEdges)
+      ? getMechanicalLayoutedElements(baseNodes, baseEdges)
+      : getLayoutedElements(baseNodes, baseEdges, 'TB');
+
+    const nodesWithSavedPositions = applySavedPositions(
+      layoutedElements.nodes,
+      nodePositions,
+    );
 
     return {
-      nodes: layoutedElements.nodes,
+      nodes: nodesWithSavedPositions,
       edges: assignGenericEdgeHandles(
         layoutedElements.edges,
-        layoutedElements.nodes,
+        nodesWithSavedPositions,
       ),
     };
-  }, [frames, relations]);
+  }, [frames, relations, nodePositions]);
 
   useEffect(() => {
     setNodes(graphElements.nodes);
@@ -445,6 +675,10 @@ function GraphCanvas() {
 
       return updatedNodes;
     });
+  };
+
+  const handleNodeDragStop: NodeDragHandler = () => {
+    setNodePositions(getPositionsFromNodes(nodes));
   };
 
   const handleNodeClick: NodeMouseHandler = (_, node) => {
@@ -472,6 +706,7 @@ function GraphCanvas() {
           elementsSelectable
           onNodesChange={handleNodesChange}
           onEdgesChange={onEdgesChange}
+          onNodeDragStop={handleNodeDragStop}
           onNodeClick={handleNodeClick}
         >
           <Background />

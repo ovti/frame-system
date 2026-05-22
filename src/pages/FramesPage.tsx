@@ -13,6 +13,9 @@ function FramesPage() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+  const primaryButtonClass =
+    'cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950';
+
   const handleOpenDetails = (frame: Frame) => {
     setSelectedFrame(frame);
     setIsDetailsModalOpen(true);
@@ -53,8 +56,9 @@ function FramesPage() {
         </div>
 
         <button
+          type='button'
           onClick={() => setIsCreateModalOpen(true)}
-          className='rounded-xl bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-700'
+          className={primaryButtonClass}
         >
           Add frame
         </button>

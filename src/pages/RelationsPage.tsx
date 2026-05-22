@@ -16,6 +16,12 @@ function RelationsPage() {
     setIsModalOpen(false);
   };
 
+  const primaryButtonClass =
+    'cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950';
+
+  const dangerButtonClass =
+    'cursor-pointer rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 shadow-sm transition hover:border-red-300 hover:bg-red-50 hover:shadow focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 active:bg-red-100';
+
   return (
     <div>
       <div className='mb-6 flex items-center justify-between'>
@@ -25,8 +31,9 @@ function RelationsPage() {
         </div>
 
         <button
+          type='button'
           onClick={() => setIsModalOpen(true)}
-          className='rounded-xl bg-slate-900 px-4 py-2 text-white'
+          className={primaryButtonClass}
         >
           Add relation
         </button>
@@ -41,7 +48,7 @@ function RelationsPage() {
           relations.map((relation) => (
             <div
               key={relation.id}
-              className='flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm'
+              className='flex items-center justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm'
             >
               <div>
                 <div className='mb-1 flex items-center gap-2'>
@@ -67,8 +74,9 @@ function RelationsPage() {
               </div>
 
               <button
+                type='button'
                 onClick={() => deleteRelation(relation.id)}
-                className='rounded-lg border border-red-200 px-3 py-2 text-red-600 hover:bg-red-50'
+                className={dangerButtonClass}
               >
                 Delete
               </button>

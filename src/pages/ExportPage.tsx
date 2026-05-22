@@ -24,6 +24,12 @@ function ExportPage() {
 
   const normalizedFileName = sanitizeFileName(fileName) || 'ie-graph-export';
 
+  const secondaryButtonClass =
+    'cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-white disabled:hover:shadow-sm';
+
+  const primaryButtonClass =
+    'cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950';
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(exportResult.text);
@@ -108,23 +114,15 @@ function ExportPage() {
               type='text'
               value={fileName}
               onChange={(event) => setFileName(event.target.value)}
-              className='w-64 rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
+              className='w-64 rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-300'
               placeholder='ie-graph-export'
             />
           </div>
 
           <button
             type='button'
-            onClick={handleCopy}
-            className='rounded-xl bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-700'
-          >
-            {copied ? 'Copied' : 'Copy export'}
-          </button>
-
-          <button
-            type='button'
             onClick={handleDownload}
-            className='rounded-xl border border-slate-300 px-4 py-2 text-slate-700 transition hover:bg-slate-100'
+            className={secondaryButtonClass}
           >
             Download JSON
           </button>
@@ -133,9 +131,17 @@ function ExportPage() {
             type='button'
             onClick={handleSaveToServer}
             disabled={isSaving}
-            className='rounded-xl border border-slate-300 px-4 py-2 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60'
+            className={secondaryButtonClass}
           >
             {isSaving ? 'Saving...' : 'Save on server'}
+          </button>
+
+          <button
+            type='button'
+            onClick={handleCopy}
+            className={primaryButtonClass}
+          >
+            {copied ? 'Copied' : 'Copy export'}
           </button>
         </div>
       </div>

@@ -23,11 +23,20 @@ interface IEGraphEdge {
   source: number;
   target: number;
   label: string;
+  relationName: string;
+  relationType: Relation['type'];
+  category?: Relation['category'];
+  layoutRole?: Relation['layoutRole'];
   original: {
     sourceId: string;
     targetId: string;
+    sourceIndex: number;
+    targetIndex: number;
     label: string;
+    relationName: string;
     type: Relation['type'];
+    category?: Relation['category'];
+    layoutRole?: Relation['layoutRole'];
     directionPreserved: boolean;
   };
 }
@@ -38,17 +47,19 @@ interface CharacteristicDescriptionItem {
   label: string;
   outDegree: number;
   edgeLabels: string[];
+  edgeRelationNames: string[];
   targetIndices: number[];
 }
 
 interface IEGraphJson {
   format: 'IE_GRAPH_JSON';
-  version: '1.0';
+  version: '1.1';
   graph: {
     V: IEGraphNode[];
     E: IEGraphEdge[];
     Sigma: string[];
     Gamma: string[];
+    relationNames: string[];
     phi: Record<string, string>;
   };
   indexing: {
@@ -73,6 +84,10 @@ function getNodeLabel(frame: Frame): string {
   return frame.name;
 }
 
+function getRelationName(relation: Relation): string {
+  return relation.relationName ?? relation.label;
+}
+
 function getInverseLabel(label: string): string {
   const symmetricLabels = ['małżonek', 'malzonek', 'spouse'];
 
@@ -81,6 +96,16 @@ function getInverseLabel(label: string): string {
   }
 
   return `${label}^-1`;
+}
+
+function getInverseRelationName(relationName: string): string {
+  const symmetricRelationNames = ['małżonek', 'malzonek', 'spouse'];
+
+  if (symmetricRelationNames.includes(relationName.toLowerCase())) {
+    return relationName;
+  }
+
+  return `${relationName}^-1`;
 }
 
 function buildUndirectedAdjacency(frames: Frame[], relations: Relation[]) {
@@ -180,33 +205,39 @@ function buildIEEdges(
 
       const directionPreserved = sourceIndex < targetIndex;
 
-      if (directionPreserved) {
-        return {
-          id: relation.id,
-          source: sourceIndex,
-          target: targetIndex,
-          label: relation.label,
-          original: {
-            sourceId: relation.sourceId,
-            targetId: relation.targetId,
-            label: relation.label,
-            type: relation.type,
-            directionPreserved: true,
-          },
-        };
-      }
+      const source = directionPreserved ? sourceIndex : targetIndex;
+      const target = directionPreserved ? targetIndex : sourceIndex;
+
+      const relationName = getRelationName(relation);
+
+      const exportedLabel = directionPreserved
+        ? relation.label
+        : getInverseLabel(relation.label);
+
+      const exportedRelationName = directionPreserved
+        ? relationName
+        : getInverseRelationName(relationName);
 
       return {
         id: relation.id,
-        source: targetIndex,
-        target: sourceIndex,
-        label: getInverseLabel(relation.label),
+        source,
+        target,
+        label: exportedLabel,
+        relationName: exportedRelationName,
+        relationType: relation.type,
+        category: relation.category,
+        layoutRole: relation.layoutRole,
         original: {
           sourceId: relation.sourceId,
           targetId: relation.targetId,
+          sourceIndex,
+          targetIndex,
           label: relation.label,
+          relationName,
           type: relation.type,
-          directionPreserved: false,
+          category: relation.category,
+          layoutRole: relation.layoutRole,
+          directionPreserved,
         },
       };
     })
@@ -242,6 +273,7 @@ function buildCharacteristicDescription(
       label: node.label,
       outDegree: outgoingEdges.length,
       edgeLabels: outgoingEdges.map((edge) => edge.label),
+      edgeRelationNames: outgoingEdges.map((edge) => edge.relationName),
       targetIndices: outgoingEdges.map((edge) => edge.target),
     };
   });
@@ -259,6 +291,12 @@ function buildGamma(edges: IEGraphEdge[]) {
   );
 }
 
+function buildRelationNames(edges: IEGraphEdge[]) {
+  return Array.from(new Set(edges.map((edge) => edge.relationName))).sort(
+    (a, b) => a.localeCompare(b),
+  );
+}
+
 function buildPhi(order: IndexedNode[]) {
   return order.reduce<Record<string, string>>((result, node) => {
     result[String(node.index)] = node.label;
@@ -266,12 +304,13 @@ function buildPhi(order: IndexedNode[]) {
   }, {});
 }
 
-function buildIEGraphJson(frames: Frame[], relations: Relation[]): IEGraphJson {
-  const order = getLottOrder(frames, relations);
-  const edges = buildIEEdges(relations, order);
+function buildIEGraphNodes(
+  frames: Frame[],
+  order: IndexedNode[],
+): IEGraphNode[] {
   const indexMap = new Map(order.map((node) => [node.id, node.index]));
 
-  const V: IEGraphNode[] = frames
+  return frames
     .map((frame) => {
       const index = indexMap.get(frame.id);
 
@@ -290,15 +329,22 @@ function buildIEGraphJson(frames: Frame[], relations: Relation[]): IEGraphJson {
     })
     .filter((node): node is IEGraphNode => node !== null)
     .sort((a, b) => a.index - b.index);
+}
+
+function buildIEGraphJson(frames: Frame[], relations: Relation[]): IEGraphJson {
+  const order = getLottOrder(frames, relations);
+  const edges = buildIEEdges(relations, order);
+  const V = buildIEGraphNodes(frames, order);
 
   return {
     format: 'IE_GRAPH_JSON',
-    version: '1.0',
+    version: '1.1',
     graph: {
       V,
       E: edges,
       Sigma: buildSigma(frames),
       Gamma: buildGamma(edges),
+      relationNames: buildRelationNames(edges),
       phi: buildPhi(order),
     },
     indexing: {
