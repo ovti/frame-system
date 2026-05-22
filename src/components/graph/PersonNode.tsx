@@ -5,6 +5,8 @@ interface PersonNodeData {
   type: string;
 }
 
+const HANDLE_POSITIONS = ['18%', '34%', '50%', '66%', '82%'];
+
 const hiddenHandleClass = '!h-3 !w-3 !border-0 !bg-transparent !opacity-0';
 
 function PersonNode({ data, selected }: NodeProps) {
@@ -12,61 +14,103 @@ function PersonNode({ data, selected }: NodeProps) {
 
   return (
     <div
-      className={`flex h-[88px] w-[220px] flex-col items-center justify-center rounded-2xl border-2 bg-white text-center shadow-sm transition ${
+      className={`flex h-[68px] w-[170px] flex-col items-center justify-center rounded-xl border-2 bg-white text-center shadow-sm transition ${
         selected ? 'border-slate-900' : 'border-slate-300'
       }`}
     >
-      <Handle
-        id='top-target'
-        type='target'
-        position={Position.Top}
-        className={hiddenHandleClass}
-      />
+      {HANDLE_POSITIONS.map((position, index) => (
+        <Handle
+          key={`top-source-${index}`}
+          id={`top-source-${index}`}
+          type='source'
+          position={Position.Top}
+          className={hiddenHandleClass}
+          style={{ left: position }}
+        />
+      ))}
 
-      <Handle
-        id='bottom-source'
-        type='source'
-        position={Position.Bottom}
-        className={hiddenHandleClass}
-      />
+      {HANDLE_POSITIONS.map((position, index) => (
+        <Handle
+          key={`top-target-${index}`}
+          id={`top-target-${index}`}
+          type='target'
+          position={Position.Top}
+          className={hiddenHandleClass}
+          style={{ left: position }}
+        />
+      ))}
 
-      <Handle
-        id='left-source'
-        type='source'
-        position={Position.Left}
-        className={hiddenHandleClass}
-        style={{ top: '50%' }}
-      />
+      {HANDLE_POSITIONS.map((position, index) => (
+        <Handle
+          key={`bottom-source-${index}`}
+          id={`bottom-source-${index}`}
+          type='source'
+          position={Position.Bottom}
+          className={hiddenHandleClass}
+          style={{ left: position }}
+        />
+      ))}
 
-      <Handle
-        id='left-target'
-        type='target'
-        position={Position.Left}
-        className={hiddenHandleClass}
-        style={{ top: '50%' }}
-      />
+      {HANDLE_POSITIONS.map((position, index) => (
+        <Handle
+          key={`bottom-target-${index}`}
+          id={`bottom-target-${index}`}
+          type='target'
+          position={Position.Bottom}
+          className={hiddenHandleClass}
+          style={{ left: position }}
+        />
+      ))}
 
-      <Handle
-        id='right-source'
-        type='source'
-        position={Position.Right}
-        className={hiddenHandleClass}
-        style={{ top: '50%' }}
-      />
+      {HANDLE_POSITIONS.map((position, index) => (
+        <Handle
+          key={`left-source-${index}`}
+          id={`left-source-${index}`}
+          type='source'
+          position={Position.Left}
+          className={hiddenHandleClass}
+          style={{ top: position }}
+        />
+      ))}
 
-      <Handle
-        id='right-target'
-        type='target'
-        position={Position.Right}
-        className={hiddenHandleClass}
-        style={{ top: '50%' }}
-      />
+      {HANDLE_POSITIONS.map((position, index) => (
+        <Handle
+          key={`left-target-${index}`}
+          id={`left-target-${index}`}
+          type='target'
+          position={Position.Left}
+          className={hiddenHandleClass}
+          style={{ top: position }}
+        />
+      ))}
 
-      <div className='text-xl font-semibold text-slate-900'>
+      {HANDLE_POSITIONS.map((position, index) => (
+        <Handle
+          key={`right-source-${index}`}
+          id={`right-source-${index}`}
+          type='source'
+          position={Position.Right}
+          className={hiddenHandleClass}
+          style={{ top: position }}
+        />
+      ))}
+
+      {HANDLE_POSITIONS.map((position, index) => (
+        <Handle
+          key={`right-target-${index}`}
+          id={`right-target-${index}`}
+          type='target'
+          position={Position.Right}
+          className={hiddenHandleClass}
+          style={{ top: position }}
+        />
+      ))}
+
+      <div className='text-base font-semibold text-slate-900'>
         {typedData.label}
       </div>
 
-      <div className='mt-1 text-xs font-medium uppercase tracking-wide text-slate-500'>
+      <div className='mt-1 text-[10px] font-medium uppercase tracking-wide text-slate-500'>
         {typedData.type}
       </div>
     </div>

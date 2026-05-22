@@ -14,6 +14,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
   const [targetId, setTargetId] = useState('');
   const [category, setCategory] = useState<RelationCategory>('FAMILY');
   const [presetId, setPresetId] = useState('spouse');
+  const [customLabel, setCustomLabel] = useState('');
   const [error, setError] = useState('');
 
   const selectedGroup = useMemo(() => {
@@ -35,8 +36,22 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
       relationPresetGroups.find((group) => group.id === value) ??
       relationPresetGroups[0];
 
+    const firstPreset = nextGroup.relations[0];
+
     setCategory(value);
-    setPresetId(nextGroup.relations[0].id);
+    setPresetId(firstPreset.id);
+    setCustomLabel(firstPreset.defaultLabel ?? '');
+    setError('');
+  };
+
+  const handlePresetChange = (value: string) => {
+    const nextPreset = selectedGroup.relations.find(
+      (relation) => relation.id === value,
+    );
+
+    setPresetId(value);
+    setCustomLabel(nextPreset?.defaultLabel ?? '');
+    setError('');
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -82,19 +97,31 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
       return;
     }
 
+    const label = selectedPreset.isCustomLabelAllowed
+      ? customLabel.trim()
+      : selectedPreset.label;
+
+    if (!label) {
+      setError('Enter an edge label.');
+      return;
+    }
+
     onSubmit({
       id: crypto.randomUUID(),
       sourceId,
       targetId,
-      label: selectedPreset.label,
+      label,
+      relationName: selectedPreset.label,
       type: selectedPreset.type,
       category: selectedPreset.category,
+      layoutRole: selectedPreset.layoutRole,
     });
 
     setSourceId('');
     setTargetId('');
     setCategory('FAMILY');
     setPresetId('spouse');
+    setCustomLabel('');
     setError('');
   };
 
@@ -126,12 +153,12 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
 
       <div>
         <label className='mb-1 block text-sm font-medium text-slate-700'>
-          Relation
+          Relation type
         </label>
 
         <select
           value={presetId}
-          onChange={(event) => setPresetId(event.target.value)}
+          onChange={(event) => handlePresetChange(event.target.value)}
           className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
         >
           {selectedGroup.relations.map((relation) => (
@@ -145,6 +172,27 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
           {selectedPreset.description}
         </p>
       </div>
+
+      {selectedPreset.isCustomLabelAllowed && (
+        <div>
+          <label className='mb-1 block text-sm font-medium text-slate-700'>
+            Edge label
+          </label>
+
+          <input
+            type='text'
+            value={customLabel}
+            onChange={(event) => setCustomLabel(event.target.value)}
+            className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
+            placeholder='E.g. 5, 4.5, a.5.6, y'
+            required
+          />
+
+          <p className='mt-1 text-sm text-slate-500'>
+            This value will be used as the actual edge label in the IE graph.
+          </p>
+        </div>
+      )}
 
       <div>
         <label className='mb-1 block text-sm font-medium text-slate-700'>
@@ -186,20 +234,31 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
         </select>
       </div>
 
-      {selectedPreset && (
-        <div className='rounded-xl bg-slate-50 p-4 text-sm text-slate-600'>
-          <p className='font-medium text-slate-900'>Relation preview</p>
-          <p className='mt-1'>
-            {sourceId
-              ? frames.find((frame) => frame.id === sourceId)?.name
-              : 'Source'}{' '}
-            → {selectedPreset.label} →{' '}
-            {targetId
-              ? frames.find((frame) => frame.id === targetId)?.name
-              : 'Target'}
-          </p>
-        </div>
-      )}
+      <div className='rounded-xl bg-slate-50 p-4 text-sm text-slate-600'>
+        <p className='font-medium text-slate-900'>Relation preview</p>
+
+        <p className='mt-1'>
+          {sourceId
+            ? frames.find((frame) => frame.id === sourceId)?.name
+            : 'Source'}{' '}
+          →{' '}
+          {selectedPreset.isCustomLabelAllowed
+            ? customLabel || 'edge label'
+            : selectedPreset.label}{' '}
+          →{' '}
+          {targetId
+            ? frames.find((frame) => frame.id === targetId)?.name
+            : 'Target'}
+        </p>
+
+        <p className='mt-2 text-xs text-slate-500'>
+          Relation name: {selectedPreset.label}
+        </p>
+
+        <p className='mt-1 text-xs text-slate-500'>
+          Layout role: {selectedPreset.layoutRole}
+        </p>
+      </div>
 
       {error && (
         <div className='rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700'>

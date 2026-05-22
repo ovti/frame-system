@@ -44,7 +44,7 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
             <h4 className='mb-2 font-semibold text-slate-900'>Inherits from</h4>
 
             {frame.parentIds.length === 0 ? (
-              <p className='text-slate-500'>No parent frames</p>
+              <p className='text-slate-500'>N/A</p>
             ) : (
               <div className='flex flex-wrap gap-2'>
                 {frame.parentIds.map((parentId) => (
@@ -63,7 +63,7 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
             <h4 className='mb-2 font-semibold text-slate-900'>Child frames</h4>
 
             {frame.childIds.length === 0 ? (
-              <p className='text-slate-500'>No child frames</p>
+              <p className='text-slate-500'>N/A</p>
             ) : (
               <div className='flex flex-wrap gap-2'>
                 {frame.childIds.map((childId) => (
@@ -83,62 +83,68 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
           <h4 className='mb-4 text-lg font-semibold text-slate-900'>Slots</h4>
 
           <div className='space-y-4'>
-            {frame.slots.map((slot) => (
-              <div
-                key={slot.id}
-                className='rounded-2xl border border-slate-200 p-4'
-              >
-                <div className='mb-4 flex items-center justify-between'>
-                  <h5 className='text-lg font-semibold text-slate-900'>
-                    {slot.name}
-                  </h5>
+            {frame.slots.length === 0 ? (
+              <p className='text-slate-500'>No slots</p>
+            ) : (
+              frame.slots.map((slot) => (
+                <div
+                  key={slot.id}
+                  className='rounded-2xl border border-slate-200 p-4'
+                >
+                  <div className='mb-4 flex items-center justify-between'>
+                    <h5 className='text-lg font-semibold text-slate-900'>
+                      {slot.name}
+                    </h5>
 
-                  <span className='rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600'>
-                    {slot.aspects.length} aspects
-                  </span>
-                </div>
-
-                <div className='space-y-2'>
-                  {slot.aspects.map((aspect) => (
-                    <div
-                      key={aspect.id}
-                      className='flex items-center justify-between rounded-lg bg-slate-50 px-4 py-2'
-                    >
-                      <span className='font-medium text-slate-700'>
-                        {aspect.type}
-                      </span>
-
-                      <span className='text-slate-600'>{aspect.value}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {slot.demons && slot.demons.length > 0 && (
-                  <div className='mt-4 border-t border-slate-200 pt-4'>
-                    <h6 className='mb-2 font-semibold text-slate-900'>
-                      Demons
-                    </h6>
-
-                    <div className='space-y-2'>
-                      {slot.demons.map((demon) => (
-                        <div
-                          key={demon.id}
-                          className='rounded-lg border border-amber-200 bg-amber-50 px-4 py-3'
-                        >
-                          <p className='font-medium text-amber-900'>
-                            {demon.type}
-                          </p>
-
-                          <p className='mt-1 text-sm text-amber-800'>
-                            {demon.description}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                    <span className='rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600'>
+                      {slot.aspects.length} aspects
+                    </span>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  <div className='space-y-2'>
+                    {slot.aspects.map((aspect) => (
+                      <div
+                        key={aspect.id}
+                        className='flex items-center justify-between gap-4 rounded-lg bg-slate-50 px-4 py-2'
+                      >
+                        <span className='font-medium text-slate-700'>
+                          {aspect.type}
+                        </span>
+
+                        <span className='text-right text-slate-600'>
+                          {aspect.value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {slot.demons && slot.demons.length > 0 && (
+                    <div className='mt-4 border-t border-slate-200 pt-4'>
+                      <h6 className='mb-2 font-semibold text-slate-900'>
+                        Demons
+                      </h6>
+
+                      <div className='space-y-2'>
+                        {slot.demons.map((demon) => (
+                          <div
+                            key={demon.id}
+                            className='rounded-lg border border-amber-200 bg-amber-50 px-4 py-3'
+                          >
+                            <p className='font-medium text-amber-900'>
+                              {demon.type}
+                            </p>
+
+                            <p className='mt-1 text-sm text-amber-800'>
+                              {demon.description}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -156,7 +162,9 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                   key={relation.id}
                   className='rounded-lg border border-slate-200 px-4 py-3'
                 >
-                  <p className='font-medium text-slate-900'>{relation.label}</p>
+                  <p className='font-medium text-slate-900'>
+                    {relation.relationName ?? relation.label}
+                  </p>
 
                   <p className='mt-1 text-sm text-slate-500'>
                     {getFrameName(relation.sourceId)} →{' '}
@@ -164,7 +172,7 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                   </p>
 
                   <p className='mt-1 text-xs text-slate-400'>
-                    Type: {relation.type}
+                    Type: {relation.label}
                   </p>
                 </div>
               ))}

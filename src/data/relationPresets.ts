@@ -1,4 +1,8 @@
-import type { RelationCategory, RelationType } from '../types/relation';
+import type {
+  RelationCategory,
+  RelationLayoutRole,
+  RelationType,
+} from '../types/relation';
 
 export interface RelationPreset {
   id: string;
@@ -6,6 +10,9 @@ export interface RelationPreset {
   type: RelationType;
   category: RelationCategory;
   description: string;
+  layoutRole: RelationLayoutRole;
+  isCustomLabelAllowed?: boolean;
+  defaultLabel?: string;
 }
 
 export interface RelationPresetGroup {
@@ -27,6 +34,7 @@ export const relationPresetGroups: RelationPresetGroup[] = [
         type: 'ASSOCIATION',
         category: 'FAMILY',
         description: 'A symmetric relation between two people.',
+        layoutRole: 'LATERAL',
       },
       {
         id: 'child',
@@ -34,6 +42,7 @@ export const relationPresetGroups: RelationPresetGroup[] = [
         type: 'ASSOCIATION',
         category: 'FAMILY',
         description: 'A relation from a parent to a child, e.g. Anna → Piotr.',
+        layoutRole: 'TREE',
       },
       {
         id: 'parent',
@@ -41,6 +50,7 @@ export const relationPresetGroups: RelationPresetGroup[] = [
         type: 'ASSOCIATION',
         category: 'FAMILY',
         description: 'A relation from a child to a parent, e.g. Piotr → Anna.',
+        layoutRole: 'TREE',
       },
     ],
   },
@@ -55,6 +65,7 @@ export const relationPresetGroups: RelationPresetGroup[] = [
         type: 'INHERITS_FROM',
         category: 'FRAME_SYSTEM',
         description: 'An inheritance relation between classes.',
+        layoutRole: 'TREE',
       },
       {
         id: 'instance-of',
@@ -62,6 +73,7 @@ export const relationPresetGroups: RelationPresetGroup[] = [
         type: 'INSTANCE_OF',
         category: 'FRAME_SYSTEM',
         description: 'A relation between an object and a class.',
+        layoutRole: 'TREE',
       },
       {
         id: 'association',
@@ -69,6 +81,48 @@ export const relationPresetGroups: RelationPresetGroup[] = [
         type: 'ASSOCIATION',
         category: 'FRAME_SYSTEM',
         description: 'A general association relation.',
+        layoutRole: 'CROSS',
+      },
+    ],
+  },
+  {
+    id: 'MECHANICAL_PART',
+    name: 'Mechanical part features',
+    description:
+      'Relations used for modeling feature primitives embedded in a constructive solid.',
+    relations: [
+      {
+        id: 'embedded-in',
+        label: 'embedded_in',
+        type: 'ASSOCIATION',
+        category: 'MECHANICAL_PART',
+        description:
+          'Connects the basic constructive solid with a feature primitive. The edge label describes the face-based placement, e.g. 5 or 4.5.',
+        layoutRole: 'TREE',
+        isCustomLabelAllowed: true,
+        defaultLabel: '5',
+      },
+      {
+        id: 'placed-in',
+        label: 'placed_in',
+        type: 'ASSOCIATION',
+        category: 'MECHANICAL_PART',
+        description:
+          'Connects a feature primitive with the feature in which it is additionally placed, e.g. a hole placed in a blind slot.',
+        layoutRole: 'CROSS',
+        isCustomLabelAllowed: true,
+        defaultLabel: 'a.5.6',
+      },
+      {
+        id: 'spatial-relation',
+        label: 'spatial_relation',
+        type: 'ASSOCIATION',
+        category: 'MECHANICAL_PART',
+        description:
+          'Connects features whose mutual position is relevant, e.g. a pair of holes.',
+        layoutRole: 'CROSS',
+        isCustomLabelAllowed: true,
+        defaultLabel: 'y',
       },
     ],
   },
