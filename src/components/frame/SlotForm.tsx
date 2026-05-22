@@ -7,6 +7,18 @@ interface SlotFormProps {
 }
 
 function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
+  const inputClass =
+    'w-full rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-300';
+
+  const amberInputClass =
+    'w-full rounded-lg border border-amber-200 px-3 py-2 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-200';
+
+  const secondaryButtonClass =
+    'w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 sm:w-auto';
+
+  const dangerButtonClass =
+    'w-full cursor-pointer rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 shadow-sm transition hover:border-red-300 hover:bg-red-50 hover:shadow focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 active:bg-red-100 sm:w-auto';
+
   const handleAddAspect = () => {
     onChange({
       ...slot,
@@ -86,15 +98,11 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
   };
 
   return (
-    <div className='space-y-5 rounded-2xl border border-slate-200 p-4'>
-      <div className='flex items-center justify-between gap-4'>
+    <div className='space-y-5 rounded-2xl border border-slate-200 p-3 sm:p-4'>
+      <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
         <h4 className='font-semibold text-slate-900'>Slot</h4>
 
-        <button
-          type='button'
-          onClick={onRemove}
-          className='rounded-lg border border-red-200 px-3 py-2 text-sm text-red-600 hover:bg-red-50'
-        >
+        <button type='button' onClick={onRemove} className={dangerButtonClass}>
           Remove slot
         </button>
       </div>
@@ -113,40 +121,47 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
               name: event.target.value,
             })
           }
-          className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
+          className={inputClass}
           placeholder='E.g. Voltage'
           required
         />
       </div>
 
       <div className='space-y-3'>
-        <div className='flex items-center justify-between'>
-          <h5 className='font-medium text-slate-900'>Aspects</h5>
+        <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+          <div>
+            <h5 className='font-medium text-slate-900'>Aspects</h5>
+            <p className='text-sm text-slate-500'>
+              Add values, ranges, defaults, or other aspect data.
+            </p>
+          </div>
 
           <button
             type='button'
             onClick={handleAddAspect}
-            className='rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100'
+            className={secondaryButtonClass}
           >
             Add aspect
           </button>
         </div>
 
         {slot.aspects.length === 0 ? (
-          <p className='text-sm text-slate-500'>No aspects.</p>
+          <p className='rounded-xl bg-slate-50 p-3 text-sm text-slate-500'>
+            No aspects.
+          </p>
         ) : (
           <div className='space-y-3'>
             {slot.aspects.map((aspect) => (
               <div
                 key={aspect.id}
-                className='grid gap-2 rounded-xl bg-slate-50 p-3 md:grid-cols-[160px_1fr_auto]'
+                className='grid gap-2 rounded-xl bg-slate-50 p-3 lg:grid-cols-[160px_1fr_auto]'
               >
                 <select
                   value={aspect.type}
                   onChange={(event) =>
                     handleAspectChange(aspect.id, 'type', event.target.value)
                   }
-                  className='rounded-lg border border-slate-300 px-3 py-2'
+                  className={inputClass}
                 >
                   <option value='VALUE'>VALUE</option>
                   <option value='RANGE'>RANGE</option>
@@ -159,7 +174,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                   onChange={(event) =>
                     handleAspectChange(aspect.id, 'value', event.target.value)
                   }
-                  className='rounded-lg border border-slate-300 px-3 py-2'
+                  className={inputClass}
                   placeholder='E.g. 230 V'
                   required
                 />
@@ -167,7 +182,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                 <button
                   type='button'
                   onClick={() => handleRemoveAspect(aspect.id)}
-                  className='rounded-lg border border-red-200 px-3 py-2 text-red-600 hover:bg-red-50'
+                  className={dangerButtonClass}
                 >
                   Remove
                 </button>
@@ -178,33 +193,40 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
       </div>
 
       <div className='space-y-3 border-t border-slate-200 pt-4'>
-        <div className='flex items-center justify-between'>
-          <h5 className='font-medium text-slate-900'>Demons</h5>
+        <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+          <div>
+            <h5 className='font-medium text-slate-900'>Demons</h5>
+            <p className='text-sm text-slate-500'>
+              Add procedural attachments connected with the slot.
+            </p>
+          </div>
 
           <button
             type='button'
             onClick={handleAddDemon}
-            className='rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100'
+            className={secondaryButtonClass}
           >
             Add demon
           </button>
         </div>
 
         {(slot.demons ?? []).length === 0 ? (
-          <p className='text-sm text-slate-500'>No demons.</p>
+          <p className='rounded-xl bg-slate-50 p-3 text-sm text-slate-500'>
+            No demons.
+          </p>
         ) : (
           <div className='space-y-3'>
             {(slot.demons ?? []).map((demon) => (
               <div
                 key={demon.id}
-                className='grid gap-2 rounded-xl bg-amber-50 p-3 md:grid-cols-[180px_1fr_auto]'
+                className='grid gap-2 rounded-xl bg-amber-50 p-3 lg:grid-cols-[180px_1fr_auto]'
               >
                 <select
                   value={demon.type}
                   onChange={(event) =>
                     handleDemonChange(demon.id, 'type', event.target.value)
                   }
-                  className='rounded-lg border border-amber-200 px-3 py-2'
+                  className={amberInputClass}
                 >
                   <option value='IF_NEEDED'>IF_NEEDED</option>
                   <option value='IF_ADDED'>IF_ADDED</option>
@@ -224,7 +246,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                       event.target.value,
                     )
                   }
-                  className='rounded-lg border border-amber-200 px-3 py-2'
+                  className={amberInputClass}
                   placeholder='Describe the demon behavior'
                   required
                 />
@@ -232,7 +254,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                 <button
                   type='button'
                   onClick={() => handleRemoveDemon(demon.id)}
-                  className='rounded-lg border border-red-200 px-3 py-2 text-red-600 hover:bg-red-50'
+                  className={dangerButtonClass}
                 >
                   Remove
                 </button>

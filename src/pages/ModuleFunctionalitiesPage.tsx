@@ -36,26 +36,26 @@ const functionalities = [
 function ModuleFunctionalitiesPage() {
   return (
     <div>
-      <div className='mb-8'>
-        <h2 className='text-3xl font-bold text-slate-950'>
+      <div className='mb-6 sm:mb-8'>
+        <h2 className='text-2xl font-bold text-slate-950 sm:text-3xl'>
           Module functionalities
         </h2>
 
-        <p className='mt-2 max-w-3xl text-slate-500'>
+        <p className='mt-2 max-w-3xl text-sm leading-6 text-slate-500 sm:text-base'>
           This part of the application provides tools for creating a frame
           system, defining relations between frames, visualizing the graph, and
           exporting the result to an IE graph representation.
         </p>
       </div>
 
-      <div className='grid gap-4 md:grid-cols-2 xl:grid-cols-3'>
+      <div className='grid gap-4 sm:grid-cols-2 xl:grid-cols-3'>
         {functionalities.map((item) => (
           <Link
             key={item.path}
             to={item.path}
-            className='group rounded-2xl bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md'
+            className='group block cursor-pointer rounded-2xl bg-white p-5 shadow-sm transition hover:bg-slate-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-100 sm:p-6 sm:hover:-translate-y-1'
           >
-            <h3 className='text-xl font-bold text-slate-900 transition group-hover:text-slate-700'>
+            <h3 className='text-lg font-bold text-slate-900 transition group-hover:text-slate-700 sm:text-xl'>
               {item.title}
             </h3>
 

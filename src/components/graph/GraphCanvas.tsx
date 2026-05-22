@@ -11,7 +11,6 @@ import {
   type Edge,
   type Node,
   type NodeChange,
-  type NodeDragHandler,
   type NodeMouseHandler,
 } from '@xyflow/react';
 import { useEffect, useMemo, useState } from 'react';
@@ -677,7 +676,7 @@ function GraphCanvas() {
     });
   };
 
-  const handleNodeDragStop: NodeDragHandler = () => {
+  const handleNodeDragStop: NodeMouseHandler = () => {
     setNodePositions(getPositionsFromNodes(nodes));
   };
 
@@ -695,7 +694,7 @@ function GraphCanvas() {
 
   return (
     <>
-      <div className='h-[700px] overflow-hidden rounded-2xl border border-slate-200 bg-white'>
+      <div className='h-[520px] min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white sm:h-[650px] lg:h-[700px]'>
         <ReactFlow
           nodes={nodes}
           edges={edges}

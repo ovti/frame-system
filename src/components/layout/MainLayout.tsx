@@ -7,10 +7,10 @@ function MainLayout() {
     <div className='min-h-screen bg-slate-100 text-slate-900'>
       <Navbar />
 
-      <div className='flex'>
+      <div className='flex flex-col lg:flex-row'>
         <Sidebar />
 
-        <main className='flex-1 p-6'>
+        <main className='min-w-0 flex-1 p-4 sm:p-6'>
           <Outlet />
         </main>
       </div>

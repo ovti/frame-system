@@ -13,6 +13,15 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
   const [description, setDescription] = useState('');
   const [slots, setSlots] = useState<FrameSlot[]>([]);
 
+  const secondaryButtonClass =
+    'w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 sm:w-auto';
+
+  const primaryButtonClass =
+    'w-full cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950 sm:w-auto';
+
+  const inputClass =
+    'w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-300';
+
   const handleAddSlot = () => {
     setSlots((previousSlots) => [
       ...previousSlots,
@@ -70,7 +79,7 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
           type='text'
           value={name}
           onChange={(event) => setName(event.target.value)}
-          className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
+          className={inputClass}
           placeholder='E.g. Computer'
           required
         />
@@ -84,7 +93,7 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
         <select
           value={type}
           onChange={(event) => setType(event.target.value as FrameType)}
-          className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
+          className={inputClass}
         >
           <option value='CLASS'>CLASS</option>
           <option value='OBJECT'>OBJECT</option>
@@ -99,15 +108,18 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
         <textarea
           value={description}
           onChange={(event) => setDescription(event.target.value)}
-          className='min-h-[120px] w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
+          className={`${inputClass} min-h-[110px] resize-y sm:min-h-[120px]`}
           placeholder='Short frame description'
         />
       </div>
 
       <div className='space-y-4 border-t border-slate-200 pt-4'>
-        <div className='flex items-center justify-between'>
+        <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
           <div>
-            <h3 className='text-lg font-semibold text-slate-900'>Slots</h3>
+            <h3 className='text-base font-semibold text-slate-900 sm:text-lg'>
+              Slots
+            </h3>
+
             <p className='text-sm text-slate-500'>
               Add frame features and their aspects.
             </p>
@@ -116,14 +128,14 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
           <button
             type='button'
             onClick={handleAddSlot}
-            className='rounded-xl border border-slate-300 px-4 py-2 text-slate-700 transition hover:bg-slate-100'
+            className={secondaryButtonClass}
           >
             Add slot
           </button>
         </div>
 
         {slots.length === 0 ? (
-          <p className='rounded-xl bg-slate-50 p-4 text-sm text-slate-500'>
+          <p className='rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-500'>
             No slots. You can create a frame without slots or add them now.
           </p>
         ) : (
@@ -142,19 +154,16 @@ function FrameForm({ onSubmit, onCancel }: FrameFormProps) {
         )}
       </div>
 
-      <div className='flex justify-end gap-3 pt-2'>
+      <div className='flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end'>
         <button
           type='button'
           onClick={onCancel}
-          className='rounded-xl border border-slate-300 px-4 py-2 text-slate-700 transition hover:bg-slate-100'
+          className={secondaryButtonClass}
         >
           Cancel
         </button>
 
-        <button
-          type='submit'
-          className='rounded-xl bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-700'
-        >
+        <button type='submit' className={primaryButtonClass}>
           Save frame
         </button>
       </div>

@@ -6,30 +6,50 @@ function HomePage() {
   const classCount = frames.filter((frame) => frame.type === 'CLASS').length;
   const objectCount = frames.filter((frame) => frame.type === 'OBJECT').length;
 
+  const stats = [
+    {
+      label: 'Number of frames',
+      value: frames.length,
+    },
+    {
+      label: 'Number of relations',
+      value: relations.length,
+    },
+    {
+      label: 'Classes',
+      value: classCount,
+    },
+    {
+      label: 'Objects',
+      value: objectCount,
+    },
+  ];
+
   return (
     <div>
-      <h2 className='mb-4 text-3xl font-bold'>Dashboard</h2>
+      <div className='mb-6'>
+        <h2 className='text-2xl font-bold sm:text-3xl'>Dashboard</h2>
 
-      <div className='grid gap-4 md:grid-cols-2 xl:grid-cols-4'>
-        <div className='rounded-2xl bg-white p-6 shadow-sm'>
-          <h3 className='text-lg font-semibold'>Number of frames</h3>
-          <p className='mt-2 text-3xl font-bold'>{frames.length}</p>
-        </div>
+        <p className='mt-1 text-sm text-slate-500 sm:text-base'>
+          Basic summary of the currently modeled frame system
+        </p>
+      </div>
 
-        <div className='rounded-2xl bg-white p-6 shadow-sm'>
-          <h3 className='text-lg font-semibold'>Number of relations</h3>
-          <p className='mt-2 text-3xl font-bold'>{relations.length}</p>
-        </div>
+      <div className='grid gap-4 sm:grid-cols-2 xl:grid-cols-4'>
+        {stats.map((item) => (
+          <div
+            key={item.label}
+            className='rounded-2xl bg-white p-5 shadow-sm sm:p-6'
+          >
+            <h3 className='text-base font-semibold text-slate-700 sm:text-lg'>
+              {item.label}
+            </h3>
 
-        <div className='rounded-2xl bg-white p-6 shadow-sm'>
-          <h3 className='text-lg font-semibold'>Classes</h3>
-          <p className='mt-2 text-3xl font-bold'>{classCount}</p>
-        </div>
-
-        <div className='rounded-2xl bg-white p-6 shadow-sm'>
-          <h3 className='text-lg font-semibold'>Objects</h3>
-          <p className='mt-2 text-3xl font-bold'>{objectCount}</p>
-        </div>
+            <p className='mt-2 text-3xl font-bold text-slate-950 sm:text-4xl'>
+              {item.value}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );

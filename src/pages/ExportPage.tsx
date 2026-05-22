@@ -25,10 +25,10 @@ function ExportPage() {
   const normalizedFileName = sanitizeFileName(fileName) || 'ie-graph-export';
 
   const secondaryButtonClass =
-    'cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-white disabled:hover:shadow-sm';
+    'w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto';
 
   const primaryButtonClass =
-    'cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950';
+    'w-full cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950 sm:w-auto';
 
   const handleCopy = async () => {
     try {
@@ -96,16 +96,16 @@ function ExportPage() {
 
   return (
     <div>
-      <div className='mb-6 flex items-start justify-between gap-6'>
+      <div className='mb-6 flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between'>
         <div>
-          <h2 className='text-3xl font-bold'>Export</h2>
-          <p className='mt-1 text-slate-500'>
+          <h2 className='text-2xl font-bold sm:text-3xl'>Export</h2>
+          <p className='mt-1 text-sm text-slate-500 sm:text-base'>
             Export the graph to a textual IE graph representation
           </p>
         </div>
 
-        <div className='flex flex-col gap-3 sm:flex-row sm:items-end'>
-          <div>
+        <div className='flex w-full flex-col gap-3 xl:w-auto xl:flex-row xl:items-end'>
+          <div className='w-full xl:w-64'>
             <label className='mb-1 block text-sm font-medium text-slate-700'>
               File name
             </label>
@@ -114,7 +114,7 @@ function ExportPage() {
               type='text'
               value={fileName}
               onChange={(event) => setFileName(event.target.value)}
-              className='w-64 rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-300'
+              className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-300'
               placeholder='ie-graph-export'
             />
           </div>
@@ -148,7 +148,7 @@ function ExportPage() {
 
       <div className='mb-4 rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-600'>
         The file will be downloaded as{' '}
-        <span className='font-mono font-semibold'>
+        <span className='break-all font-mono font-semibold'>
           {normalizedFileName}.json
         </span>
         .
@@ -166,7 +166,7 @@ function ExportPage() {
                 href={savedFileUrl}
                 target='_blank'
                 rel='noreferrer'
-                className='font-mono font-semibold text-slate-900 underline'
+                className='break-all font-mono font-semibold text-slate-900 underline'
               >
                 {savedFileUrl}
               </a>
@@ -175,11 +175,11 @@ function ExportPage() {
         </div>
       )}
 
-      <div className='rounded-2xl bg-white p-6 shadow-sm'>
+      <div className='rounded-2xl bg-white p-3 shadow-sm sm:p-6'>
         <textarea
           readOnly
           value={exportResult.text}
-          className='min-h-[500px] w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 font-mono text-sm outline-none'
+          className='min-h-[420px] w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-3 font-mono text-xs outline-none sm:min-h-[500px] sm:px-4 sm:text-sm'
         />
       </div>
     </div>

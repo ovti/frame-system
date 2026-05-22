@@ -6,8 +6,8 @@ import './styles/App.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      {/* <BrowserRouter basename='/~21_zalubski/frame-system'> */}
+    {/* <BrowserRouter> */}
+    <BrowserRouter basename='/~21_zalubski/frame-system'>
       <App />
     </BrowserRouter>
   </React.StrictMode>,

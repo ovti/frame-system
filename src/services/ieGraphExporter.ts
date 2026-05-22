@@ -196,8 +196,8 @@ function buildIEEdges(
 ): IEGraphEdge[] {
   const indexMap = new Map(nodeOrder.map((node) => [node.id, node.index]));
 
-  return relations
-    .map((relation) => {
+  const mappedEdges: Array<IEGraphEdge | null> = relations.map(
+    (relation): IEGraphEdge | null => {
       const sourceIndex = indexMap.get(relation.sourceId);
       const targetIndex = indexMap.get(relation.targetId);
 
@@ -218,29 +218,48 @@ function buildIEEdges(
         ? relationName
         : getInverseRelationName(relationName);
 
-      return {
+      const original: IEGraphEdge['original'] = {
+        sourceId: relation.sourceId,
+        targetId: relation.targetId,
+        sourceIndex,
+        targetIndex,
+        label: relation.label,
+        relationName,
+        type: relation.type,
+        directionPreserved,
+      };
+
+      if (relation.category) {
+        original.category = relation.category;
+      }
+
+      if (relation.layoutRole) {
+        original.layoutRole = relation.layoutRole;
+      }
+
+      const edge: IEGraphEdge = {
         id: relation.id,
         source,
         target,
         label: exportedLabel,
         relationName: exportedRelationName,
         relationType: relation.type,
-        category: relation.category,
-        layoutRole: relation.layoutRole,
-        original: {
-          sourceId: relation.sourceId,
-          targetId: relation.targetId,
-          sourceIndex,
-          targetIndex,
-          label: relation.label,
-          relationName,
-          type: relation.type,
-          category: relation.category,
-          layoutRole: relation.layoutRole,
-          directionPreserved,
-        },
+        original,
       };
-    })
+
+      if (relation.category) {
+        edge.category = relation.category;
+      }
+
+      if (relation.layoutRole) {
+        edge.layoutRole = relation.layoutRole;
+      }
+
+      return edge;
+    },
+  );
+
+  return mappedEdges
     .filter((edge): edge is IEGraphEdge => edge !== null)
     .sort((a, b) => {
       if (a.source !== b.source) return a.source - b.source;
