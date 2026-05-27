@@ -1,4 +1,4 @@
-import type { AspectType, DemonType, FrameSlot } from '../../types/frame';
+import type { FacetType, DemonType, FrameSlot } from '../../types/frame';
 
 interface SlotFormProps {
   slot: FrameSlot;
@@ -7,9 +7,9 @@ interface SlotFormProps {
 }
 
 const SLOT_NAME_MAX_LENGTH = 60;
-const ASPECT_VALUE_MAX_LENGTH = 120;
+const FACET_VALUE_MAX_LENGTH = 120;
 const DEMON_DESCRIPTION_MAX_LENGTH = 180;
-const MAX_ASPECTS_PER_SLOT = 10;
+const MAX_FACETS_PER_SLOT = 10;
 const MAX_DEMONS_PER_SLOT = 8;
 
 function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
@@ -27,13 +27,21 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
 
   const helperTextClass = 'mt-1 text-xs text-slate-400';
 
-  const handleAddAspect = () => {
-    if (slot.aspects.length >= MAX_ASPECTS_PER_SLOT) return;
+  const getFacetCountLabel = (count: number) => {
+    return count === 1 ? 'facet' : 'facets';
+  };
+
+  const getDemonCountLabel = (count: number) => {
+    return count === 1 ? 'demon' : 'demons';
+  };
+
+  const handleAddFacet = () => {
+    if (slot.facets.length >= MAX_FACETS_PER_SLOT) return;
 
     onChange({
       ...slot,
-      aspects: [
-        ...slot.aspects,
+      facets: [
+        ...slot.facets,
         {
           id: crypto.randomUUID(),
           type: 'VALUE',
@@ -43,31 +51,31 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
     });
   };
 
-  const handleAspectChange = (
-    aspectId: string,
+  const handleFacetChange = (
+    facetId: string,
     field: 'type' | 'value',
     value: string,
   ) => {
     const nextValue =
-      field === 'value' ? value.slice(0, ASPECT_VALUE_MAX_LENGTH) : value;
+      field === 'value' ? value.slice(0, FACET_VALUE_MAX_LENGTH) : value;
 
     onChange({
       ...slot,
-      aspects: slot.aspects.map((aspect) =>
-        aspect.id === aspectId
+      facets: slot.facets.map((facet) =>
+        facet.id === facetId
           ? {
-              ...aspect,
-              [field]: field === 'type' ? (nextValue as AspectType) : nextValue,
+              ...facet,
+              [field]: field === 'type' ? (nextValue as FacetType) : nextValue,
             }
-          : aspect,
+          : facet,
       ),
     });
   };
 
-  const handleRemoveAspect = (aspectId: string) => {
+  const handleRemoveFacet = (facetId: string) => {
     onChange({
       ...slot,
-      aspects: slot.aspects.filter((aspect) => aspect.id !== aspectId),
+      facets: slot.facets.filter((facet) => facet.id !== facetId),
     });
   };
 
@@ -159,41 +167,42 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
       <div className='space-y-3'>
         <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
           <div>
-            <h5 className='font-medium text-slate-900'>Aspects</h5>
+            <h5 className='font-medium text-slate-900'>Facets</h5>
             <p className='text-sm text-slate-500'>
-              Add values, ranges, defaults, or other aspect data.
+              Add values, ranges, defaults, or other facet data.
             </p>
 
             <p className={helperTextClass}>
-              {slot.aspects.length}/{MAX_ASPECTS_PER_SLOT} aspects
+              {slot.facets.length}/{MAX_FACETS_PER_SLOT}{' '}
+              {getFacetCountLabel(slot.facets.length)}
             </p>
           </div>
 
           <button
             type='button'
-            onClick={handleAddAspect}
+            onClick={handleAddFacet}
             className={secondaryButtonClass}
-            disabled={slot.aspects.length >= MAX_ASPECTS_PER_SLOT}
+            disabled={slot.facets.length >= MAX_FACETS_PER_SLOT}
           >
-            Add aspect
+            Add facet
           </button>
         </div>
 
-        {slot.aspects.length === 0 ? (
+        {slot.facets.length === 0 ? (
           <p className='rounded-xl bg-slate-50 p-3 text-sm text-slate-500'>
-            No aspects.
+            No facets.
           </p>
         ) : (
           <div className='space-y-3'>
-            {slot.aspects.map((aspect) => (
+            {slot.facets.map((facet) => (
               <div
-                key={aspect.id}
+                key={facet.id}
                 className='grid gap-2 rounded-xl bg-slate-50 p-3 lg:grid-cols-[160px_1fr_auto]'
               >
                 <select
-                  value={aspect.type}
+                  value={facet.type}
                   onChange={(event) =>
-                    handleAspectChange(aspect.id, 'type', event.target.value)
+                    handleFacetChange(facet.id, 'type', event.target.value)
                   }
                   className={inputClass}
                 >
@@ -205,24 +214,24 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                 <div>
                   <input
                     type='text'
-                    value={aspect.value}
+                    value={facet.value}
                     onChange={(event) =>
-                      handleAspectChange(aspect.id, 'value', event.target.value)
+                      handleFacetChange(facet.id, 'value', event.target.value)
                     }
                     className={inputClass}
                     placeholder='E.g. 230 V'
-                    maxLength={ASPECT_VALUE_MAX_LENGTH}
+                    maxLength={FACET_VALUE_MAX_LENGTH}
                     required
                   />
 
                   <p className={helperTextClass}>
-                    {aspect.value.length}/{ASPECT_VALUE_MAX_LENGTH} characters
+                    {facet.value.length}/{FACET_VALUE_MAX_LENGTH} characters
                   </p>
                 </div>
 
                 <button
                   type='button'
-                  onClick={() => handleRemoveAspect(aspect.id)}
+                  onClick={() => handleRemoveFacet(facet.id)}
                   className={dangerButtonClass}
                 >
                   Remove
@@ -242,7 +251,8 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
             </p>
 
             <p className={helperTextClass}>
-              {demons.length}/{MAX_DEMONS_PER_SLOT} demons
+              {demons.length}/{MAX_DEMONS_PER_SLOT}{' '}
+              {getDemonCountLabel(demons.length)}
             </p>
           </div>
 

@@ -12,9 +12,9 @@ export const sampleFrames: Frame[] = [
       {
         id: 'slot-anna-1',
         name: 'Gender',
-        aspects: [
+        facets: [
           {
-            id: 'aspect-anna-1',
+            id: 'facet-anna-1',
             type: 'VALUE',
             value: 'female',
           },
@@ -23,9 +23,9 @@ export const sampleFrames: Frame[] = [
       {
         id: 'slot-anna-2',
         name: 'Role in example',
-        aspects: [
+        facets: [
           {
-            id: 'aspect-anna-2',
+            id: 'facet-anna-2',
             type: 'VALUE',
             value: 'mother',
           },
@@ -45,9 +45,9 @@ export const sampleFrames: Frame[] = [
       {
         id: 'slot-jan-1',
         name: 'Gender',
-        aspects: [
+        facets: [
           {
-            id: 'aspect-jan-1',
+            id: 'facet-jan-1',
             type: 'VALUE',
             value: 'male',
           },
@@ -56,9 +56,9 @@ export const sampleFrames: Frame[] = [
       {
         id: 'slot-jan-2',
         name: 'Role in example',
-        aspects: [
+        facets: [
           {
-            id: 'aspect-jan-2',
+            id: 'facet-jan-2',
             type: 'VALUE',
             value: 'father',
           },
@@ -78,9 +78,9 @@ export const sampleFrames: Frame[] = [
       {
         id: 'slot-piotr-1',
         name: 'Gender',
-        aspects: [
+        facets: [
           {
-            id: 'aspect-piotr-1',
+            id: 'facet-piotr-1',
             type: 'VALUE',
             value: 'male',
           },
@@ -89,9 +89,9 @@ export const sampleFrames: Frame[] = [
       {
         id: 'slot-piotr-2',
         name: 'Role in example',
-        aspects: [
+        facets: [
           {
-            id: 'aspect-piotr-2',
+            id: 'facet-piotr-2',
             type: 'VALUE',
             value: 'son',
           },
@@ -117,9 +117,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-rc-1-type',
 //         name: 'Type',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-rc-1-type-value',
+//             id: 'facet-rc-1-type-value',
 //             type: 'VALUE',
 //             value: 'Rectangular cuboid',
 //           },
@@ -128,9 +128,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-rc-1-label',
 //         name: 'Label',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-rc-1-label-value',
+//             id: 'facet-rc-1-label-value',
 //             type: 'VALUE',
 //             value: 'RC',
 //           },
@@ -139,9 +139,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-rc-1-index',
 //         name: 'Index',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-rc-1-index-value',
+//             id: 'facet-rc-1-index-value',
 //             type: 'VALUE',
 //             value: '1',
 //           },
@@ -161,9 +161,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-bs-2-type',
 //         name: 'Type',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-bs-2-type-value',
+//             id: 'facet-bs-2-type-value',
 //             type: 'VALUE',
 //             value: 'Blind slot',
 //           },
@@ -172,9 +172,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-bs-2-label',
 //         name: 'Label',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-bs-2-label-value',
+//             id: 'facet-bs-2-label-value',
 //             type: 'VALUE',
 //             value: 'BS',
 //           },
@@ -183,9 +183,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-bs-2-index',
 //         name: 'Index',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-bs-2-index-value',
+//             id: 'facet-bs-2-index-value',
 //             type: 'VALUE',
 //             value: '2',
 //           },
@@ -205,9 +205,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-bs-3-type',
 //         name: 'Type',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-bs-3-type-value',
+//             id: 'facet-bs-3-type-value',
 //             type: 'VALUE',
 //             value: 'Blind slot',
 //           },
@@ -216,9 +216,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-bs-3-label',
 //         name: 'Label',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-bs-3-label-value',
+//             id: 'facet-bs-3-label-value',
 //             type: 'VALUE',
 //             value: 'BS',
 //           },
@@ -227,9 +227,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-bs-3-index',
 //         name: 'Index',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-bs-3-index-value',
+//             id: 'facet-bs-3-index-value',
 //             type: 'VALUE',
 //             value: '3',
 //           },
@@ -249,9 +249,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-4-type',
 //         name: 'Type',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-4-type-value',
+//             id: 'facet-hole-4-type-value',
 //             type: 'VALUE',
 //             value: 'Perpendicular hole',
 //           },
@@ -260,9 +260,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-4-label',
 //         name: 'Label',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-4-label-value',
+//             id: 'facet-hole-4-label-value',
 //             type: 'VALUE',
 //             value: 'H',
 //           },
@@ -271,9 +271,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-4-index',
 //         name: 'Index',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-4-index-value',
+//             id: 'facet-hole-4-index-value',
 //             type: 'VALUE',
 //             value: '4',
 //           },
@@ -282,19 +282,19 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-4-parameters',
 //         name: 'Parameters',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-4-diameter',
+//             id: 'facet-hole-4-diameter',
 //             type: 'VALUE',
 //             value: 'DIAMETER: 1.0',
 //           },
 //           {
-//             id: 'aspect-hole-4-depth',
+//             id: 'facet-hole-4-depth',
 //             type: 'VALUE',
 //             value: 'DEPTH: 0.5',
 //           },
 //           {
-//             id: 'aspect-hole-4-parameters-unit',
+//             id: 'facet-hole-4-parameters-unit',
 //             type: 'VALUE',
 //             value: 'UNIT: cm',
 //           },
@@ -303,24 +303,24 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-4-placement-cord',
 //         name: 'Placement_cord',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-4-x-coord',
+//             id: 'facet-hole-4-x-coord',
 //             type: 'VALUE',
 //             value: 'X_COORD: 4.5',
 //           },
 //           {
-//             id: 'aspect-hole-4-y-coord',
+//             id: 'facet-hole-4-y-coord',
 //             type: 'VALUE',
 //             value: 'Y_COORD: 1.5',
 //           },
 //           {
-//             id: 'aspect-hole-4-z-coord',
+//             id: 'facet-hole-4-z-coord',
 //             type: 'VALUE',
 //             value: 'Z_COORD: 2.5',
 //           },
 //           {
-//             id: 'aspect-hole-4-placement-unit',
+//             id: 'facet-hole-4-placement-unit',
 //             type: 'VALUE',
 //             value: 'UNIT: cm',
 //           },
@@ -340,9 +340,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-5-type',
 //         name: 'Type',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-5-type-value',
+//             id: 'facet-hole-5-type-value',
 //             type: 'VALUE',
 //             value: 'Perpendicular hole',
 //           },
@@ -351,9 +351,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-5-label',
 //         name: 'Label',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-5-label-value',
+//             id: 'facet-hole-5-label-value',
 //             type: 'VALUE',
 //             value: 'H',
 //           },
@@ -362,9 +362,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-5-index',
 //         name: 'Index',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-5-index-value',
+//             id: 'facet-hole-5-index-value',
 //             type: 'VALUE',
 //             value: '5',
 //           },
@@ -384,9 +384,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-6-type',
 //         name: 'Type',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-6-type-value',
+//             id: 'facet-hole-6-type-value',
 //             type: 'VALUE',
 //             value: 'Perpendicular hole',
 //           },
@@ -395,9 +395,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-6-label',
 //         name: 'Label',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-6-label-value',
+//             id: 'facet-hole-6-label-value',
 //             type: 'VALUE',
 //             value: 'H',
 //           },
@@ -406,9 +406,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-6-index',
 //         name: 'Index',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-6-index-value',
+//             id: 'facet-hole-6-index-value',
 //             type: 'VALUE',
 //             value: '6',
 //           },
@@ -428,9 +428,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-7-type',
 //         name: 'Type',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-7-type-value',
+//             id: 'facet-hole-7-type-value',
 //             type: 'VALUE',
 //             value: 'Perpendicular hole',
 //           },
@@ -439,9 +439,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-7-label',
 //         name: 'Label',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-7-label-value',
+//             id: 'facet-hole-7-label-value',
 //             type: 'VALUE',
 //             value: 'H',
 //           },
@@ -450,9 +450,9 @@ export const sampleFrames: Frame[] = [
 //       {
 //         id: 'slot-hole-7-index',
 //         name: 'Index',
-//         aspects: [
+//         facets: [
 //           {
-//             id: 'aspect-hole-7-index-value',
+//             id: 'facet-hole-7-index-value',
 //             type: 'VALUE',
 //             value: '7',
 //           },

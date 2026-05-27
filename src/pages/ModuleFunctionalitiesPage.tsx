@@ -16,7 +16,7 @@ const functionalities = [
   {
     title: 'Frame creation',
     description:
-      'Adding frames that represent objects or classes, including slots, aspects, and demons.',
+      'Adding frames that represent objects or classes, including slots, facets, and demons.',
     path: '/app/frames',
   },
   {

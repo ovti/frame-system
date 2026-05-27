@@ -38,6 +38,10 @@ function FrameForm({
 
   const helperTextClass = 'mt-1 text-xs text-slate-400';
 
+  const getSlotCountLabel = (count: number) => {
+    return count === 1 ? 'slot' : 'slots';
+  };
+
   const handleAddSlot = () => {
     setError('');
 
@@ -51,7 +55,7 @@ function FrameForm({
       {
         id: crypto.randomUUID(),
         name: '',
-        aspects: [],
+        facets: [],
         demons: [],
       },
     ]);
@@ -114,9 +118,9 @@ function FrameForm({
       slots: slots.map((slot) => ({
         ...slot,
         name: slot.name.trim(),
-        aspects: slot.aspects.map((aspect) => ({
-          ...aspect,
-          value: aspect.value.trim(),
+        facets: slot.facets.map((facet) => ({
+          ...facet,
+          value: facet.value.trim(),
         })),
         demons: (slot.demons ?? []).map((demon) => ({
           ...demon,
@@ -207,11 +211,12 @@ function FrameForm({
             </h3>
 
             <p className='text-sm text-slate-500'>
-              Add frame features and their aspects.
+              Add frame features and their facets.
             </p>
 
             <p className={helperTextClass}>
-              {slots.length}/{MAX_SLOTS_PER_FRAME} slots
+              {slots.length}/{MAX_SLOTS_PER_FRAME}{' '}
+              {getSlotCountLabel(slots.length)}
             </p>
           </div>
 

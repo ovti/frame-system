@@ -22,8 +22,8 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
     return frames.find((item) => item.id === frameId)?.name ?? frameId;
   };
 
-  const getAspectCountLabel = (count: number) => {
-    return count === 1 ? '1 aspect' : `${count} aspects`;
+  const getFacetCountLabel = (count: number) => {
+    return count === 1 ? '1 facet' : `${count} facets`;
   };
 
   return (
@@ -109,22 +109,22 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                     </h5>
 
                     <span className='w-fit shrink-0 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600 sm:text-sm'>
-                      {getAspectCountLabel(slot.aspects.length)}
+                      {getFacetCountLabel(slot.facets.length)}
                     </span>
                   </div>
 
                   <div className='space-y-2'>
-                    {slot.aspects.map((aspect) => (
+                    {slot.facets.map((facet) => (
                       <div
-                        key={aspect.id}
+                        key={facet.id}
                         className='flex flex-col gap-1 rounded-lg bg-slate-50 px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-4'
                       >
                         <span className='font-medium text-slate-700'>
-                          {aspect.type}
+                          {facet.type}
                         </span>
 
                         <span className='break-words text-slate-600 sm:text-right'>
-                          {aspect.value}
+                          {facet.value}
                         </span>
                       </div>
                     ))}

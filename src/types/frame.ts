@@ -2,7 +2,7 @@ import type { Relation } from './relation';
 
 export type FrameType = 'OBJECT' | 'CLASS';
 
-export type AspectType = 'VALUE' | 'RANGE' | 'DEFAULT';
+export type FacetType = 'VALUE' | 'RANGE' | 'DEFAULT';
 
 export type DemonType =
   | 'IF_NEEDED'
@@ -12,9 +12,9 @@ export type DemonType =
   | 'IF_READ'
   | 'IF_NEW';
 
-export interface FrameAspect {
+export interface FrameFacet {
   id: string;
-  type: AspectType;
+  type: FacetType;
   value: string;
 }
 
@@ -27,7 +27,7 @@ export interface FrameDemon {
 export interface FrameSlot {
   id: string;
   name: string;
-  aspects: FrameAspect[];
+  facets: FrameFacet[];
   demons?: FrameDemon[];
 }
 

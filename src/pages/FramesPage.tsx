@@ -145,7 +145,7 @@ function FramesPage() {
           </h2>
 
           <p className='mt-1 text-sm text-slate-500 sm:text-base'>
-            Update frame data, slots, aspects, and demons
+            Update frame data, slots, facets, and demons
           </p>
         </div>
 
