@@ -26,16 +26,14 @@ export const relationPresetGroups: RelationPresetGroup[] = [
   {
     id: 'FAMILY',
     name: 'Family relations',
-    description:
-      'Relations describing people and family dependencies. These relations do not create frame inheritance.',
+    description: 'Relations describing people and family dependencies.',
     relations: [
       {
         id: 'spouse',
         label: 'spouse',
         type: 'ASSOCIATION',
         category: 'FAMILY',
-        description:
-          'A symmetric family relation between two people. It is not an inheritance relation.',
+        description: 'A symmetric family relation between two people.',
         layoutRole: 'LATERAL',
       },
       {
@@ -44,7 +42,7 @@ export const relationPresetGroups: RelationPresetGroup[] = [
         type: 'ASSOCIATION',
         category: 'FAMILY',
         description:
-          'A family relation from a parent to a child, e.g. Anna → Piotr. It is not frame inheritance.',
+          'A family relation from a parent to a child, e.g. Anna → Piotr.',
         layoutRole: 'TREE',
       },
       {
@@ -53,7 +51,7 @@ export const relationPresetGroups: RelationPresetGroup[] = [
         type: 'ASSOCIATION',
         category: 'FAMILY',
         description:
-          'A family relation from a child to a parent, e.g. Piotr → Anna. It is not frame inheritance.',
+          'A family relation from a child to a parent, e.g. Piotr → Anna.',
         layoutRole: 'TREE',
       },
     ],
