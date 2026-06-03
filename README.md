@@ -1,75 +1,103 @@
-# React + TypeScript + Vite
+# GRAGRAFRAME
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## PL
 
-Currently, two official plugins are available:
+GRAGRAFRAME to aplikacja webowa przygotowana na potrzeby pracy magisterskiej dotyczącej modelowania systemu ramowego jako grafu zinterpretowanego oraz wykorzystania gramatyk grafowych klasy ETPL(k) w procesie wnioskowania.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Aplikacja umożliwia tworzenie ramek, definiowanie klatek i aspektów, dodawanie relacji między ramkami, wizualizację struktury w postaci grafu oraz eksport danych do tekstowej reprezentacji grafu IE.
 
-## React Compiler
+Projekt został przygotowany jako część praktyczna pracy magisterskiej.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### Technologie
 
-Note: This will impact Vite dev & build performances.
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Flow
 
-## Expanding the ESLint configuration
+### Instalacja i uruchomienie
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Sklonuj repozytorium:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/ovti/frame-system.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Przejdź do folderu projektu:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd frame-system
 ```
+
+3. Zainstaluj zależności:
+
+```bash
+npm install
+```
+
+4. Uruchom aplikację w trybie developerskim:
+
+```bash
+npm run dev
+```
+
+5. Zbuduj aplikację do produkcji:
+
+```bash
+npm run build
+```
+
+Zbudowana aplikacja będzie dostępna w folderze `dist`.
+
+---
+
+## EN
+
+GRAGRAFRAME is a web application developed as part of a master's thesis focused on modeling a frame-based knowledge system as an interpreted graph and using ETPL(k) graph grammars for inference.
+
+The application allows users to create frames, define slots and facets, add relations between frames, visualize the structure as a graph, and export the data to a textual IE graph representation.
+
+The project was created as the practical part of the master's thesis.
+
+### Technologies
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Flow
+
+### Installation and running
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/ovti/frame-system.git
+```
+
+2. Go to the project directory:
+
+```bash
+cd frame-system
+```
+
+3. Install dependencies:
+
+```bash
+npm install
+```
+
+4. Run the application in development mode:
+
+```bash
+npm run dev
+```
+
+5. Build the application for production:
+
+```bash
+npm run build
+```
+
+The built application will be available in the `dist` folder.
