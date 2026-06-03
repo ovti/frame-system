@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { exportToIEGraphText } from '../services/ieGraphExporter';
 import { useFrameStore } from '../store/frameStore';
 
+const FILE_NAME_MAX_LENGTH = 60;
+
 function sanitizeFileName(fileName: string) {
   return fileName
     .trim()
@@ -18,6 +20,8 @@ function ExportPage() {
   const [savedFileUrl, setSavedFileUrl] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
+  const fileNameInputId = 'export-file-name';
+
   const exportResult = useMemo(() => {
     return exportToIEGraphText(frames, relations);
   }, [frames, relations]);
@@ -29,6 +33,15 @@ function ExportPage() {
 
   const primaryButtonClass =
     'w-full cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950 sm:w-auto';
+
+  const inputClass =
+    'w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-300';
+
+  const handleFileNameChange = (value: string) => {
+    setFileName(value.slice(0, FILE_NAME_MAX_LENGTH));
+    setSaveStatus('');
+    setSavedFileUrl('');
+  };
 
   const handleCopy = async () => {
     try {
@@ -99,6 +112,7 @@ function ExportPage() {
       <div className="mb-6 flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
         <div>
           <h2 className="text-2xl font-bold sm:text-3xl">Export</h2>
+
           <p className="mt-1 text-sm text-slate-500 sm:text-base">
             Export the graph to a textual IE graph representation
           </p>
@@ -106,16 +120,22 @@ function ExportPage() {
 
         <div className="flex w-full flex-col gap-3 xl:w-auto xl:flex-row xl:items-end">
           <div className="w-full xl:w-64">
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor={fileNameInputId}
+              className="mb-1 block text-sm font-medium text-slate-700"
+            >
               File name
             </label>
 
             <input
+              id={fileNameInputId}
+              name="exportFileName"
               type="text"
               value={fileName}
-              onChange={(event) => setFileName(event.target.value)}
-              className="w-full rounded-xl border border-slate-300 px-4 py-2 transition outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-300"
+              onChange={(event) => handleFileNameChange(event.target.value)}
+              className={inputClass}
               placeholder="ie-graph-export"
+              maxLength={FILE_NAME_MAX_LENGTH}
             />
           </div>
 
@@ -177,6 +197,9 @@ function ExportPage() {
 
       <div className="rounded-2xl bg-white p-3 shadow-sm sm:p-6">
         <textarea
+          id="ie-graph-export-output"
+          name="ieGraphExportOutput"
+          aria-label="IE graph export output"
           readOnly
           value={exportResult.text}
           className="min-h-105 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-3 font-mono text-xs outline-none sm:min-h-125 sm:px-4 sm:text-sm"

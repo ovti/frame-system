@@ -1,4 +1,4 @@
-import type { FacetType, DemonType, FrameSlot } from '../../types/frame';
+import type { DemonType, FacetType, FrameSlot } from '../../types/frame';
 
 interface SlotFormProps {
   slot: FrameSlot;
@@ -26,6 +26,8 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
     'w-full cursor-pointer rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 shadow-sm transition hover:border-red-300 hover:bg-red-50 hover:shadow focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 active:bg-red-100 sm:w-auto';
 
   const helperTextClass = 'mt-1 text-xs text-slate-400';
+
+  const slotNameInputId = `slot-name-${slot.id}`;
 
   const getFacetCountLabel = (count: number) => {
     return count === 1 ? 'facet' : 'facets';
@@ -145,11 +147,16 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">
+        <label
+          htmlFor={slotNameInputId}
+          className="mb-1 block text-sm font-medium text-slate-700"
+        >
           Slot name
         </label>
 
         <input
+          id={slotNameInputId}
+          name={slotNameInputId}
           type="text"
           value={slot.name}
           onChange={(event) => handleSlotNameChange(event.target.value)}
@@ -194,50 +201,61 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
           </p>
         ) : (
           <div className="space-y-3">
-            {slot.facets.map((facet) => (
-              <div
-                key={facet.id}
-                className="grid gap-2 rounded-xl bg-slate-50 p-3 lg:grid-cols-[160px_1fr_auto]"
-              >
-                <select
-                  value={facet.type}
-                  onChange={(event) =>
-                    handleFacetChange(facet.id, 'type', event.target.value)
-                  }
-                  className={inputClass}
-                >
-                  <option value="VALUE">VALUE</option>
-                  <option value="RANGE">RANGE</option>
-                  <option value="DEFAULT">DEFAULT</option>
-                </select>
+            {slot.facets.map((facet) => {
+              const facetTypeInputId = `facet-type-${facet.id}`;
+              const facetValueInputId = `facet-value-${facet.id}`;
 
-                <div>
-                  <input
-                    type="text"
-                    value={facet.value}
+              return (
+                <div
+                  key={facet.id}
+                  className="grid gap-2 rounded-xl bg-slate-50 p-3 lg:grid-cols-[160px_1fr_auto]"
+                >
+                  <select
+                    id={facetTypeInputId}
+                    name={facetTypeInputId}
+                    aria-label="Facet type"
+                    value={facet.type}
                     onChange={(event) =>
-                      handleFacetChange(facet.id, 'value', event.target.value)
+                      handleFacetChange(facet.id, 'type', event.target.value)
                     }
                     className={inputClass}
-                    placeholder="E.g. 230 V"
-                    maxLength={FACET_VALUE_MAX_LENGTH}
-                    required
-                  />
+                  >
+                    <option value="VALUE">VALUE</option>
+                    <option value="RANGE">RANGE</option>
+                    <option value="DEFAULT">DEFAULT</option>
+                  </select>
 
-                  <p className={helperTextClass}>
-                    {facet.value.length}/{FACET_VALUE_MAX_LENGTH} characters
-                  </p>
+                  <div>
+                    <input
+                      id={facetValueInputId}
+                      name={facetValueInputId}
+                      aria-label="Facet value"
+                      type="text"
+                      value={facet.value}
+                      onChange={(event) =>
+                        handleFacetChange(facet.id, 'value', event.target.value)
+                      }
+                      className={inputClass}
+                      placeholder="E.g. 230 V"
+                      maxLength={FACET_VALUE_MAX_LENGTH}
+                      required
+                    />
+
+                    <p className={helperTextClass}>
+                      {facet.value.length}/{FACET_VALUE_MAX_LENGTH} characters
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveFacet(facet.id)}
+                    className={dangerButtonClass}
+                  >
+                    Remove
+                  </button>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleRemoveFacet(facet.id)}
-                  className={dangerButtonClass}
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -272,58 +290,69 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
           </p>
         ) : (
           <div className="space-y-3">
-            {demons.map((demon) => (
-              <div
-                key={demon.id}
-                className="grid gap-2 rounded-xl bg-amber-50 p-3 lg:grid-cols-[180px_1fr_auto]"
-              >
-                <select
-                  value={demon.type}
-                  onChange={(event) =>
-                    handleDemonChange(demon.id, 'type', event.target.value)
-                  }
-                  className={amberInputClass}
-                >
-                  <option value="IF_NEEDED">IF_NEEDED</option>
-                  <option value="IF_ADDED">IF_ADDED</option>
-                  <option value="IF_UPDATED">IF_UPDATED</option>
-                  <option value="IF_REMOVED">IF_REMOVED</option>
-                  <option value="IF_READ">IF_READ</option>
-                  <option value="IF_NEW">IF_NEW</option>
-                </select>
+            {demons.map((demon) => {
+              const demonTypeInputId = `demon-type-${demon.id}`;
+              const demonDescriptionInputId = `demon-description-${demon.id}`;
 
-                <div>
-                  <input
-                    type="text"
-                    value={demon.description}
+              return (
+                <div
+                  key={demon.id}
+                  className="grid gap-2 rounded-xl bg-amber-50 p-3 lg:grid-cols-[180px_1fr_auto]"
+                >
+                  <select
+                    id={demonTypeInputId}
+                    name={demonTypeInputId}
+                    aria-label="Demon type"
+                    value={demon.type}
                     onChange={(event) =>
-                      handleDemonChange(
-                        demon.id,
-                        'description',
-                        event.target.value,
-                      )
+                      handleDemonChange(demon.id, 'type', event.target.value)
                     }
                     className={amberInputClass}
-                    placeholder="Describe the demon behavior"
-                    maxLength={DEMON_DESCRIPTION_MAX_LENGTH}
-                    required
-                  />
+                  >
+                    <option value="IF_NEEDED">IF_NEEDED</option>
+                    <option value="IF_ADDED">IF_ADDED</option>
+                    <option value="IF_UPDATED">IF_UPDATED</option>
+                    <option value="IF_REMOVED">IF_REMOVED</option>
+                    <option value="IF_READ">IF_READ</option>
+                    <option value="IF_NEW">IF_NEW</option>
+                  </select>
 
-                  <p className="mt-1 text-xs text-amber-600">
-                    {demon.description.length}/{DEMON_DESCRIPTION_MAX_LENGTH}{' '}
-                    characters
-                  </p>
+                  <div>
+                    <input
+                      id={demonDescriptionInputId}
+                      name={demonDescriptionInputId}
+                      aria-label="Demon description"
+                      type="text"
+                      value={demon.description}
+                      onChange={(event) =>
+                        handleDemonChange(
+                          demon.id,
+                          'description',
+                          event.target.value,
+                        )
+                      }
+                      className={amberInputClass}
+                      placeholder="Describe the demon behavior"
+                      maxLength={DEMON_DESCRIPTION_MAX_LENGTH}
+                      required
+                    />
+
+                    <p className="mt-1 text-xs text-amber-600">
+                      {demon.description.length}/{DEMON_DESCRIPTION_MAX_LENGTH}{' '}
+                      characters
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveDemon(demon.id)}
+                    className={dangerButtonClass}
+                  >
+                    Remove
+                  </button>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleRemoveDemon(demon.id)}
-                  className={dangerButtonClass}
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

@@ -89,7 +89,7 @@ function getRelationName(relation: Relation): string {
 }
 
 function getInverseLabel(label: string): string {
-  const symmetricLabels = ['małżonek', 'malzonek', 'spouse'];
+  const symmetricLabels = ['spouse'];
 
   if (symmetricLabels.includes(label.toLowerCase())) {
     return label;
@@ -99,7 +99,7 @@ function getInverseLabel(label: string): string {
 }
 
 function getInverseRelationName(relationName: string): string {
-  const symmetricRelationNames = ['małżonek', 'malzonek', 'spouse'];
+  const symmetricRelationNames = ['spouse'];
 
   if (symmetricRelationNames.includes(relationName.toLowerCase())) {
     return relationName;

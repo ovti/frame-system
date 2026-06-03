@@ -27,6 +27,11 @@ function FrameForm({
 
   const isEditMode = Boolean(initialFrame);
 
+  const formId = initialFrame?.id ?? 'new-frame';
+  const frameNameInputId = `frame-name-${formId}`;
+  const frameTypeInputId = `frame-type-${formId}`;
+  const frameDescriptionInputId = `frame-description-${formId}`;
+
   const secondaryButtonClass =
     'w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto';
 
@@ -145,11 +150,16 @@ function FrameForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">
+        <label
+          htmlFor={frameNameInputId}
+          className="mb-1 block text-sm font-medium text-slate-700"
+        >
           Frame name
         </label>
 
         <input
+          id={frameNameInputId}
+          name="frameName"
           type="text"
           value={name}
           onChange={(event) => {
@@ -168,11 +178,16 @@ function FrameForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">
+        <label
+          htmlFor={frameTypeInputId}
+          className="mb-1 block text-sm font-medium text-slate-700"
+        >
           Frame type
         </label>
 
         <select
+          id={frameTypeInputId}
+          name="frameType"
           value={type}
           onChange={(event) => setType(event.target.value as FrameType)}
           className={inputClass}
@@ -183,17 +198,22 @@ function FrameForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">
+        <label
+          htmlFor={frameDescriptionInputId}
+          className="mb-1 block text-sm font-medium text-slate-700"
+        >
           Description
         </label>
 
         <textarea
+          id={frameDescriptionInputId}
+          name="frameDescription"
           value={description}
           onChange={(event) => {
             setDescription(event.target.value);
             setError('');
           }}
-          className={`${inputClass} min-h-27.5 resize-y sm:min-h-30`}
+          className={`${inputClass} min-h-30 resize-y`}
           placeholder="Short frame description"
           maxLength={FRAME_DESCRIPTION_MAX_LENGTH}
         />
