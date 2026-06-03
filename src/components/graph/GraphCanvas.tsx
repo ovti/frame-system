@@ -558,7 +558,7 @@ function GraphCanvas() {
 
   return (
     <>
-      <div className='h-[520px] min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white sm:h-[650px] lg:h-[700px]'>
+      <div className="h-130 min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white sm:h-162.5 lg:h-175">
         <ReactFlow
           nodes={nodes}
           edges={edges}

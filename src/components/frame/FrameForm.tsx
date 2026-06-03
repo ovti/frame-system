@@ -143,21 +143,21 @@ function FrameForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-5'>
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label className='mb-1 block text-sm font-medium text-slate-700'>
+        <label className="mb-1 block text-sm font-medium text-slate-700">
           Frame name
         </label>
 
         <input
-          type='text'
+          type="text"
           value={name}
           onChange={(event) => {
             setName(event.target.value);
             setError('');
           }}
           className={inputClass}
-          placeholder='E.g. Computer'
+          placeholder="E.g. Computer"
           maxLength={FRAME_NAME_MAX_LENGTH}
           required
         />
@@ -168,7 +168,7 @@ function FrameForm({
       </div>
 
       <div>
-        <label className='mb-1 block text-sm font-medium text-slate-700'>
+        <label className="mb-1 block text-sm font-medium text-slate-700">
           Frame type
         </label>
 
@@ -177,13 +177,13 @@ function FrameForm({
           onChange={(event) => setType(event.target.value as FrameType)}
           className={inputClass}
         >
-          <option value='CLASS'>CLASS</option>
-          <option value='OBJECT'>OBJECT</option>
+          <option value="CLASS">CLASS</option>
+          <option value="OBJECT">OBJECT</option>
         </select>
       </div>
 
       <div>
-        <label className='mb-1 block text-sm font-medium text-slate-700'>
+        <label className="mb-1 block text-sm font-medium text-slate-700">
           Description
         </label>
 
@@ -193,8 +193,8 @@ function FrameForm({
             setDescription(event.target.value);
             setError('');
           }}
-          className={`${inputClass} min-h-[110px] resize-y sm:min-h-[120px]`}
-          placeholder='Short frame description'
+          className={`${inputClass} min-h-27.5 resize-y sm:min-h-30`}
+          placeholder="Short frame description"
           maxLength={FRAME_DESCRIPTION_MAX_LENGTH}
         />
 
@@ -203,14 +203,14 @@ function FrameForm({
         </p>
       </div>
 
-      <div className='space-y-4 border-t border-slate-200 pt-4'>
-        <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+      <div className="space-y-4 border-t border-slate-200 pt-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className='text-base font-semibold text-slate-900 sm:text-lg'>
+            <h3 className="text-base font-semibold text-slate-900 sm:text-lg">
               Slots
             </h3>
 
-            <p className='text-sm text-slate-500'>
+            <p className="text-sm text-slate-500">
               Add frame features and their facets.
             </p>
 
@@ -221,7 +221,7 @@ function FrameForm({
           </div>
 
           <button
-            type='button'
+            type="button"
             onClick={handleAddSlot}
             className={secondaryButtonClass}
             disabled={slots.length >= MAX_SLOTS_PER_FRAME}
@@ -231,11 +231,11 @@ function FrameForm({
         </div>
 
         {slots.length === 0 ? (
-          <p className='rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-500'>
+          <p className="rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-500">
             No slots. You can create a frame without slots or add them now.
           </p>
         ) : (
-          <div className='space-y-4'>
+          <div className="space-y-4">
             {slots.map((slot) => (
               <SlotForm
                 key={slot.id}
@@ -251,21 +251,21 @@ function FrameForm({
       </div>
 
       {error && (
-        <div className='rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700'>
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
-      <div className='flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end'>
+      <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
         <button
-          type='button'
+          type="button"
           onClick={onCancel}
           className={secondaryButtonClass}
         >
           Cancel
         </button>
 
-        <button type='submit' className={primaryButtonClass}>
+        <button type="submit" className={primaryButtonClass}>
           {isEditMode ? 'Save changes' : 'Save frame'}
         </button>
       </div>

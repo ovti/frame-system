@@ -32,46 +32,46 @@ function FrameCard({ frame, onClick, onEdit, onDelete }: FrameCardProps) {
   return (
     <div
       onClick={onClick}
-      className='cursor-pointer rounded-2xl bg-white p-5 text-left shadow-sm transition hover:bg-slate-50 hover:shadow-md focus-within:ring-2 focus-within:ring-slate-300 sm:p-6 sm:hover:-translate-y-1'
+      className="cursor-pointer rounded-2xl bg-white p-5 text-left shadow-sm transition focus-within:ring-2 focus-within:ring-slate-300 hover:bg-slate-50 hover:shadow-md sm:p-6 sm:hover:-translate-y-1"
     >
-      <div className='mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4'>
-        <div className='min-w-0'>
-          <h3 className='break-words text-lg font-bold text-slate-900 sm:text-xl'>
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+        <div className="min-w-0">
+          <h3 className="text-lg font-bold wrap-break-word text-slate-900 sm:text-xl">
             {frame.name}
           </h3>
 
-          <p className='mt-1 text-sm text-slate-500'>Type: {frame.type}</p>
+          <p className="mt-1 text-sm text-slate-500">Type: {frame.type}</p>
         </div>
 
-        <span className='w-fit shrink-0 rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700'>
+        <span className="w-fit shrink-0 rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">
           {getSlotCountLabel(frame.slots.length)}
         </span>
       </div>
 
-      <p className='mb-4 break-words text-sm leading-6 text-slate-600'>
+      <p className="mb-4 text-sm leading-6 wrap-break-word text-slate-600">
         {frame.description || 'No description'}
       </p>
 
-      <div className='mb-4 flex flex-wrap gap-2'>
+      <div className="mb-4 flex flex-wrap gap-2">
         {frame.slots.slice(0, 3).map((slot) => (
           <span
             key={slot.id}
-            className='max-w-full break-words rounded-full bg-slate-200 px-3 py-1 text-xs font-medium text-slate-700'
+            className="max-w-full rounded-full bg-slate-200 px-3 py-1 text-xs font-medium wrap-break-word text-slate-700"
           >
             {slot.name}
           </span>
         ))}
 
         {frame.slots.length > 3 && (
-          <span className='rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500'>
+          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500">
             +{frame.slots.length - 3} more
           </span>
         )}
       </div>
 
-      <div className='flex flex-col gap-2 sm:flex-row sm:justify-end'>
+      <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
         <button
-          type='button'
+          type="button"
           onClick={handleEditClick}
           className={secondaryButtonClass}
         >
@@ -79,7 +79,7 @@ function FrameCard({ frame, onClick, onEdit, onDelete }: FrameCardProps) {
         </button>
 
         <button
-          type='button'
+          type="button"
           onClick={handleDeleteClick}
           className={dangerButtonClass}
         >

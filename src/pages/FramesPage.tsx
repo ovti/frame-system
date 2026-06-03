@@ -74,17 +74,17 @@ function FramesPage() {
 
   return (
     <div>
-      <div className='mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className='text-2xl font-bold sm:text-3xl'>Frames</h2>
+          <h2 className="text-2xl font-bold sm:text-3xl">Frames</h2>
 
-          <p className='mt-1 text-sm text-slate-500 sm:text-base'>
+          <p className="mt-1 text-sm text-slate-500 sm:text-base">
             List of all frames in the system
           </p>
         </div>
 
         <button
-          type='button'
+          type="button"
           onClick={() => setIsCreateModalOpen(true)}
           className={primaryButtonClass}
         >
@@ -93,13 +93,13 @@ function FramesPage() {
       </div>
 
       {frames.length === 0 ? (
-        <div className='rounded-2xl bg-white p-5 shadow-sm sm:p-6'>
-          <p className='text-sm text-slate-500 sm:text-base'>
+        <div className="rounded-2xl bg-white p-5 shadow-sm sm:p-6">
+          <p className="text-sm text-slate-500 sm:text-base">
             No frames available.
           </p>
         </div>
       ) : (
-        <div className='grid gap-4 sm:grid-cols-2 xl:grid-cols-3'>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {frames.map((frame) => (
             <FrameCard
               key={frame.id}
@@ -122,12 +122,12 @@ function FramesPage() {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
       >
-        <div className='mb-6'>
-          <h2 className='text-xl font-bold text-slate-900 sm:text-2xl'>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
             Add a new frame
           </h2>
 
-          <p className='mt-1 text-sm text-slate-500 sm:text-base'>
+          <p className="mt-1 text-sm text-slate-500 sm:text-base">
             Create a new class or object
           </p>
         </div>
@@ -139,12 +139,12 @@ function FramesPage() {
       </Modal>
 
       <Modal isOpen={isEditModalOpen} onClose={handleCloseEdit}>
-        <div className='mb-6'>
-          <h2 className='text-xl font-bold text-slate-900 sm:text-2xl'>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
             Edit frame
           </h2>
 
-          <p className='mt-1 text-sm text-slate-500 sm:text-base'>
+          <p className="mt-1 text-sm text-slate-500 sm:text-base">
             Update frame data, slots, facets, and demons
           </p>
         </div>

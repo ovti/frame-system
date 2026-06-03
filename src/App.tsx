@@ -13,19 +13,19 @@ import './styles/App.css';
 function App() {
   return (
     <Routes>
-      <Route path='/' element={<LandingPage />} />
+      <Route path="/" element={<LandingPage />} />
 
-      <Route path='/app' element={<MainLayout />}>
+      <Route path="/app" element={<MainLayout />}>
         <Route index element={<ModuleFunctionalitiesPage />} />
-        <Route path='dashboard' element={<HomePage />} />
-        <Route path='graph' element={<GraphPage />} />
-        <Route path='frames' element={<FramesPage />} />
-        <Route path='relations' element={<RelationsPage />} />
-        <Route path='export' element={<ExportPage />} />
-        <Route path='info' element={<InfoPage />} />
+        <Route path="dashboard" element={<HomePage />} />
+        <Route path="graph" element={<GraphPage />} />
+        <Route path="frames" element={<FramesPage />} />
+        <Route path="relations" element={<RelationsPage />} />
+        <Route path="export" element={<ExportPage />} />
+        <Route path="info" element={<InfoPage />} />
       </Route>
 
-      <Route path='*' element={<NotFoundPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

@@ -126,9 +126,9 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-4'>
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className='mb-1 block text-sm font-medium text-slate-700'>
+        <label className="mb-1 block text-sm font-medium text-slate-700">
           Relation set
         </label>
 
@@ -137,7 +137,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
           onChange={(event) =>
             handleCategoryChange(event.target.value as RelationCategory)
           }
-          className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
+          className="w-full rounded-xl border border-slate-300 px-4 py-2 transition outline-none focus:border-slate-900"
         >
           {relationPresetGroups.map((group) => (
             <option key={group.id} value={group.id}>
@@ -146,20 +146,20 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
           ))}
         </select>
 
-        <p className='mt-1 text-sm text-slate-500'>
+        <p className="mt-1 text-sm text-slate-500">
           {selectedGroup.description}
         </p>
       </div>
 
       <div>
-        <label className='mb-1 block text-sm font-medium text-slate-700'>
+        <label className="mb-1 block text-sm font-medium text-slate-700">
           Relation type
         </label>
 
         <select
           value={presetId}
           onChange={(event) => handlePresetChange(event.target.value)}
-          className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
+          className="w-full rounded-xl border border-slate-300 px-4 py-2 transition outline-none focus:border-slate-900"
         >
           {selectedGroup.relations.map((relation) => (
             <option key={relation.id} value={relation.id}>
@@ -168,44 +168,44 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
           ))}
         </select>
 
-        <p className='mt-1 text-sm text-slate-500'>
+        <p className="mt-1 text-sm text-slate-500">
           {selectedPreset.description}
         </p>
       </div>
 
       {selectedPreset.isCustomLabelAllowed && (
         <div>
-          <label className='mb-1 block text-sm font-medium text-slate-700'>
+          <label className="mb-1 block text-sm font-medium text-slate-700">
             Edge label
           </label>
 
           <input
-            type='text'
+            type="text"
             value={customLabel}
             onChange={(event) => setCustomLabel(event.target.value)}
-            className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
-            placeholder='E.g. 5, 4.5, a.5.6, y'
+            className="w-full rounded-xl border border-slate-300 px-4 py-2 transition outline-none focus:border-slate-900"
+            placeholder="E.g. 5, 4.5, a.5.6, y"
             required
           />
 
-          <p className='mt-1 text-sm text-slate-500'>
+          <p className="mt-1 text-sm text-slate-500">
             This value will be used as the actual edge label in the IE graph.
           </p>
         </div>
       )}
 
       <div>
-        <label className='mb-1 block text-sm font-medium text-slate-700'>
+        <label className="mb-1 block text-sm font-medium text-slate-700">
           Source frame
         </label>
 
         <select
           value={sourceId}
           onChange={(event) => setSourceId(event.target.value)}
-          className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
+          className="w-full rounded-xl border border-slate-300 px-4 py-2 transition outline-none focus:border-slate-900"
           required
         >
-          <option value=''>Select source frame</option>
+          <option value="">Select source frame</option>
           {frames.map((frame) => (
             <option key={frame.id} value={frame.id}>
               {frame.name}
@@ -215,17 +215,17 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
       </div>
 
       <div>
-        <label className='mb-1 block text-sm font-medium text-slate-700'>
+        <label className="mb-1 block text-sm font-medium text-slate-700">
           Target frame
         </label>
 
         <select
           value={targetId}
           onChange={(event) => setTargetId(event.target.value)}
-          className='w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900'
+          className="w-full rounded-xl border border-slate-300 px-4 py-2 transition outline-none focus:border-slate-900"
           required
         >
-          <option value=''>Select target frame</option>
+          <option value="">Select target frame</option>
           {frames.map((frame) => (
             <option key={frame.id} value={frame.id}>
               {frame.name}
@@ -234,10 +234,10 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
         </select>
       </div>
 
-      <div className='rounded-xl bg-slate-50 p-4 text-sm text-slate-600'>
-        <p className='font-medium text-slate-900'>Relation preview</p>
+      <div className="rounded-xl bg-slate-50 p-4 text-sm text-slate-600">
+        <p className="font-medium text-slate-900">Relation preview</p>
 
-        <p className='mt-1'>
+        <p className="mt-1">
           {sourceId
             ? frames.find((frame) => frame.id === sourceId)?.name
             : 'Source'}{' '}
@@ -251,29 +251,29 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
             : 'Target'}
         </p>
 
-        <p className='mt-2 text-xs text-slate-500'>
+        <p className="mt-2 text-xs text-slate-500">
           Relation name: {selectedPreset.label}
         </p>
       </div>
 
       {error && (
-        <div className='rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700'>
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
-      <div className='flex justify-end gap-3 pt-2'>
+      <div className="flex justify-end gap-3 pt-2">
         <button
-          type='button'
+          type="button"
           onClick={onCancel}
-          className='rounded-xl border border-slate-300 px-4 py-2 text-slate-700 transition hover:bg-slate-100'
+          className="rounded-xl border border-slate-300 px-4 py-2 text-slate-700 transition hover:bg-slate-100"
         >
           Cancel
         </button>
 
         <button
-          type='submit'
-          className='rounded-xl bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-700'
+          type="submit"
+          className="rounded-xl bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-700"
         >
           Save relation
         </button>

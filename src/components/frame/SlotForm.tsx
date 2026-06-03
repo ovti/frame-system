@@ -135,26 +135,26 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
   const demons = slot.demons ?? [];
 
   return (
-    <div className='space-y-5 rounded-2xl border border-slate-200 p-3 sm:p-4'>
-      <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
-        <h4 className='font-semibold text-slate-900'>Slot</h4>
+    <div className="space-y-5 rounded-2xl border border-slate-200 p-3 sm:p-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h4 className="font-semibold text-slate-900">Slot</h4>
 
-        <button type='button' onClick={onRemove} className={dangerButtonClass}>
+        <button type="button" onClick={onRemove} className={dangerButtonClass}>
           Remove slot
         </button>
       </div>
 
       <div>
-        <label className='mb-1 block text-sm font-medium text-slate-700'>
+        <label className="mb-1 block text-sm font-medium text-slate-700">
           Slot name
         </label>
 
         <input
-          type='text'
+          type="text"
           value={slot.name}
           onChange={(event) => handleSlotNameChange(event.target.value)}
           className={inputClass}
-          placeholder='E.g. Voltage'
+          placeholder="E.g. Voltage"
           maxLength={SLOT_NAME_MAX_LENGTH}
           required
         />
@@ -164,11 +164,11 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
         </p>
       </div>
 
-      <div className='space-y-3'>
-        <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+      <div className="space-y-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h5 className='font-medium text-slate-900'>Facets</h5>
-            <p className='text-sm text-slate-500'>
+            <h5 className="font-medium text-slate-900">Facets</h5>
+            <p className="text-sm text-slate-500">
               Add values, ranges, defaults, or other facet data.
             </p>
 
@@ -179,7 +179,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
           </div>
 
           <button
-            type='button'
+            type="button"
             onClick={handleAddFacet}
             className={secondaryButtonClass}
             disabled={slot.facets.length >= MAX_FACETS_PER_SLOT}
@@ -189,15 +189,15 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
         </div>
 
         {slot.facets.length === 0 ? (
-          <p className='rounded-xl bg-slate-50 p-3 text-sm text-slate-500'>
+          <p className="rounded-xl bg-slate-50 p-3 text-sm text-slate-500">
             No facets.
           </p>
         ) : (
-          <div className='space-y-3'>
+          <div className="space-y-3">
             {slot.facets.map((facet) => (
               <div
                 key={facet.id}
-                className='grid gap-2 rounded-xl bg-slate-50 p-3 lg:grid-cols-[160px_1fr_auto]'
+                className="grid gap-2 rounded-xl bg-slate-50 p-3 lg:grid-cols-[160px_1fr_auto]"
               >
                 <select
                   value={facet.type}
@@ -206,20 +206,20 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                   }
                   className={inputClass}
                 >
-                  <option value='VALUE'>VALUE</option>
-                  <option value='RANGE'>RANGE</option>
-                  <option value='DEFAULT'>DEFAULT</option>
+                  <option value="VALUE">VALUE</option>
+                  <option value="RANGE">RANGE</option>
+                  <option value="DEFAULT">DEFAULT</option>
                 </select>
 
                 <div>
                   <input
-                    type='text'
+                    type="text"
                     value={facet.value}
                     onChange={(event) =>
                       handleFacetChange(facet.id, 'value', event.target.value)
                     }
                     className={inputClass}
-                    placeholder='E.g. 230 V'
+                    placeholder="E.g. 230 V"
                     maxLength={FACET_VALUE_MAX_LENGTH}
                     required
                   />
@@ -230,7 +230,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                 </div>
 
                 <button
-                  type='button'
+                  type="button"
                   onClick={() => handleRemoveFacet(facet.id)}
                   className={dangerButtonClass}
                 >
@@ -242,11 +242,11 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
         )}
       </div>
 
-      <div className='space-y-3 border-t border-slate-200 pt-4'>
-        <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+      <div className="space-y-3 border-t border-slate-200 pt-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h5 className='font-medium text-slate-900'>Demons</h5>
-            <p className='text-sm text-slate-500'>
+            <h5 className="font-medium text-slate-900">Demons</h5>
+            <p className="text-sm text-slate-500">
               Add procedural attachments connected with the slot.
             </p>
 
@@ -257,7 +257,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
           </div>
 
           <button
-            type='button'
+            type="button"
             onClick={handleAddDemon}
             className={secondaryButtonClass}
             disabled={demons.length >= MAX_DEMONS_PER_SLOT}
@@ -267,15 +267,15 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
         </div>
 
         {demons.length === 0 ? (
-          <p className='rounded-xl bg-slate-50 p-3 text-sm text-slate-500'>
+          <p className="rounded-xl bg-slate-50 p-3 text-sm text-slate-500">
             No demons.
           </p>
         ) : (
-          <div className='space-y-3'>
+          <div className="space-y-3">
             {demons.map((demon) => (
               <div
                 key={demon.id}
-                className='grid gap-2 rounded-xl bg-amber-50 p-3 lg:grid-cols-[180px_1fr_auto]'
+                className="grid gap-2 rounded-xl bg-amber-50 p-3 lg:grid-cols-[180px_1fr_auto]"
               >
                 <select
                   value={demon.type}
@@ -284,17 +284,17 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                   }
                   className={amberInputClass}
                 >
-                  <option value='IF_NEEDED'>IF_NEEDED</option>
-                  <option value='IF_ADDED'>IF_ADDED</option>
-                  <option value='IF_UPDATED'>IF_UPDATED</option>
-                  <option value='IF_REMOVED'>IF_REMOVED</option>
-                  <option value='IF_READ'>IF_READ</option>
-                  <option value='IF_NEW'>IF_NEW</option>
+                  <option value="IF_NEEDED">IF_NEEDED</option>
+                  <option value="IF_ADDED">IF_ADDED</option>
+                  <option value="IF_UPDATED">IF_UPDATED</option>
+                  <option value="IF_REMOVED">IF_REMOVED</option>
+                  <option value="IF_READ">IF_READ</option>
+                  <option value="IF_NEW">IF_NEW</option>
                 </select>
 
                 <div>
                   <input
-                    type='text'
+                    type="text"
                     value={demon.description}
                     onChange={(event) =>
                       handleDemonChange(
@@ -304,19 +304,19 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
                       )
                     }
                     className={amberInputClass}
-                    placeholder='Describe the demon behavior'
+                    placeholder="Describe the demon behavior"
                     maxLength={DEMON_DESCRIPTION_MAX_LENGTH}
                     required
                   />
 
-                  <p className='mt-1 text-xs text-amber-600'>
+                  <p className="mt-1 text-xs text-amber-600">
                     {demon.description.length}/{DEMON_DESCRIPTION_MAX_LENGTH}{' '}
                     characters
                   </p>
                 </div>
 
                 <button
-                  type='button'
+                  type="button"
                   onClick={() => handleRemoveDemon(demon.id)}
                   className={dangerButtonClass}
                 >

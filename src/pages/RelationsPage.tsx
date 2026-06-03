@@ -24,16 +24,16 @@ function RelationsPage() {
 
   return (
     <div>
-      <div className='mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className='text-2xl font-bold sm:text-3xl'>Relations</h2>
-          <p className='mt-1 text-sm text-slate-500 sm:text-base'>
+          <h2 className="text-2xl font-bold sm:text-3xl">Relations</h2>
+          <p className="mt-1 text-sm text-slate-500 sm:text-base">
             Connections between frames
           </p>
         </div>
 
         <button
-          type='button'
+          type="button"
           onClick={() => setIsModalOpen(true)}
           className={primaryButtonClass}
         >
@@ -41,10 +41,10 @@ function RelationsPage() {
         </button>
       </div>
 
-      <div className='space-y-3'>
+      <div className="space-y-3">
         {relations.length === 0 ? (
-          <div className='rounded-2xl bg-white p-5 shadow-sm sm:p-6'>
-            <p className='text-sm text-slate-500 sm:text-base'>
+          <div className="rounded-2xl bg-white p-5 shadow-sm sm:p-6">
+            <p className="text-sm text-slate-500 sm:text-base">
               No relations available.
             </p>
           </div>
@@ -52,27 +52,27 @@ function RelationsPage() {
           relations.map((relation) => (
             <div
               key={relation.id}
-              className='flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between'
+              className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between"
             >
-              <div className='min-w-0'>
-                <div className='mb-1 flex flex-wrap items-center gap-2'>
-                  <p className='break-words font-semibold text-slate-900'>
+              <div className="min-w-0">
+                <div className="mb-1 flex flex-wrap items-center gap-2">
+                  <p className="font-semibold wrap-break-word text-slate-900">
                     {relation.relationName ?? relation.label}
                   </p>
 
                   {relation.category && (
-                    <span className='rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600'>
+                    <span className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600">
                       {relation.category}
                     </span>
                   )}
                 </div>
 
-                <p className='break-words text-sm text-slate-500'>
+                <p className="text-sm wrap-break-word text-slate-500">
                   {getFrameName(relation.sourceId)} →{' '}
                   {getFrameName(relation.targetId)}
                 </p>
 
-                <div className='mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-400'>
+                <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-400">
                   <p>Technical type: {relation.type}</p>
 
                   {relation.relationName && <p>Edge label: {relation.label}</p>}
@@ -80,7 +80,7 @@ function RelationsPage() {
               </div>
 
               <button
-                type='button'
+                type="button"
                 onClick={() => deleteRelation(relation.id)}
                 className={dangerButtonClass}
               >
@@ -92,8 +92,8 @@ function RelationsPage() {
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className='mb-6'>
-          <h2 className='text-2xl font-bold text-slate-900'>Add relation</h2>
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-slate-900">Add relation</h2>
         </div>
 
         <RelationForm

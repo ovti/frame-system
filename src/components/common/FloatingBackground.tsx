@@ -81,14 +81,14 @@ const floatingImages = [
 
 function FloatingBackground() {
   return (
-    <div className='pointer-events-none absolute inset-0 z-0 overflow-hidden'>
+    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
       {floatingImages.map((image, index) => (
         <img
           key={index}
           src={image.src}
-          alt=''
-          aria-hidden='true'
-          className={`absolute select-none object-contain ${image.className}`}
+          alt=""
+          aria-hidden="true"
+          className={`absolute object-contain select-none ${image.className}`}
         />
       ))}
     </div>
