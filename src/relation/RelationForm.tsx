@@ -293,7 +293,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
       <div className="rounded-xl bg-slate-50 p-4 text-sm text-slate-600">
         <p className="font-medium text-slate-900">Relation preview</p>
 
-        <p className="mt-1 break-words">
+        <p className="mt-1 wrap-break-word">
           {sourceId
             ? frames.find((frame) => frame.id === sourceId)?.name
             : 'Source'}{' '}
