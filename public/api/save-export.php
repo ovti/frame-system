@@ -44,7 +44,7 @@ if ($result === false) {
     exit;
 }
 
-$fileUrl = '/~21_zalubski/gragraframe/share/' . $fileName . '.json';
+$fileUrl = '/gragraframe/share/' . $fileName . '.json';
 
 echo json_encode([
     'success' => true,

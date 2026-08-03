@@ -1,5 +1,5 @@
-const SERVER_LINK = '/~21_zalubski/gragraframe/';
-// const SERVER_LINK = '';
+// const SERVER_LINK = '/~21_zalubski/gragraframe/';
+const SERVER_LINK = '';
 
 const floatingImages = [
   {

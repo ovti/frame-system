@@ -77,19 +77,16 @@ function ExportPage() {
     setSavedFileUrl('');
 
     try {
-      const response = await fetch(
-        '/~21_zalubski/gragraframe/api/save-export.php',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            fileName: normalizedFileName,
-            content: exportResult.text,
-          }),
+      const response = await fetch('/gragraframe/api/save-export.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          fileName: normalizedFileName,
+          content: exportResult.text,
+        }),
+      });
 
       const data = await response.json();
 
