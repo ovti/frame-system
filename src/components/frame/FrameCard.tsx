@@ -1,5 +1,7 @@
 import type { MouseEvent } from 'react';
+import { dangerButtonClass } from '../../styles/uiClasses';
 import type { Frame } from '../../types/frame';
+import { formatCount } from '../../utils/pluralize';
 
 interface FrameCardProps {
   frame: Frame;
@@ -19,15 +21,8 @@ function FrameCard({ frame, onClick, onEdit, onDelete }: FrameCardProps) {
     onDelete();
   };
 
-  const getSlotCountLabel = (count: number) => {
-    return count === 1 ? '1 slot' : `${count} slots`;
-  };
-
   const secondaryButtonClass =
     'w-full cursor-pointer rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 sm:w-auto';
-
-  const dangerButtonClass =
-    'w-full cursor-pointer rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 shadow-sm transition hover:border-red-300 hover:bg-red-50 hover:shadow focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 active:bg-red-100 sm:w-auto';
 
   return (
     <div
@@ -44,7 +39,7 @@ function FrameCard({ frame, onClick, onEdit, onDelete }: FrameCardProps) {
         </div>
 
         <span className="w-fit shrink-0 rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">
-          {getSlotCountLabel(frame.slots.length)}
+          {formatCount(frame.slots.length, 'slot')}
         </span>
       </div>
 

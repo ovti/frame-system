@@ -1,4 +1,6 @@
+import { dangerButtonClass, helperTextClass } from '../../styles/uiClasses';
 import type { DemonType, FacetType, FrameSlot } from '../../types/frame';
+import { pluralize } from '../../utils/pluralize';
 
 interface SlotFormProps {
   slot: FrameSlot;
@@ -22,20 +24,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
   const secondaryButtonClass =
     'w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto';
 
-  const dangerButtonClass =
-    'w-full cursor-pointer rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 shadow-sm transition hover:border-red-300 hover:bg-red-50 hover:shadow focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 active:bg-red-100 sm:w-auto';
-
-  const helperTextClass = 'mt-1 text-xs text-slate-400';
-
   const slotNameInputId = `slot-name-${slot.id}`;
-
-  const getFacetCountLabel = (count: number) => {
-    return count === 1 ? 'facet' : 'facets';
-  };
-
-  const getDemonCountLabel = (count: number) => {
-    return count === 1 ? 'demon' : 'demons';
-  };
 
   const handleAddFacet = () => {
     if (slot.facets.length >= MAX_FACETS_PER_SLOT) return;
@@ -181,7 +170,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
 
             <p className={helperTextClass}>
               {slot.facets.length}/{MAX_FACETS_PER_SLOT}{' '}
-              {getFacetCountLabel(slot.facets.length)}
+              {pluralize(slot.facets.length, 'facet')}
             </p>
           </div>
 
@@ -270,7 +259,7 @@ function SlotForm({ slot, onChange, onRemove }: SlotFormProps) {
 
             <p className={helperTextClass}>
               {demons.length}/{MAX_DEMONS_PER_SLOT}{' '}
-              {getDemonCountLabel(demons.length)}
+              {pluralize(demons.length, 'demon')}
             </p>
           </div>
 

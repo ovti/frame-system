@@ -88,24 +88,14 @@ function getRelationName(relation: Relation): string {
   return relation.relationName ?? relation.label;
 }
 
-function getInverseLabel(label: string): string {
-  const symmetricLabels = ['spouse'];
+const SYMMETRIC_RELATION_NAMES = ['spouse'];
 
-  if (symmetricLabels.includes(label.toLowerCase())) {
-    return label;
+function getInverseName(name: string): string {
+  if (SYMMETRIC_RELATION_NAMES.includes(name.toLowerCase())) {
+    return name;
   }
 
-  return `${label}^-1`;
-}
-
-function getInverseRelationName(relationName: string): string {
-  const symmetricRelationNames = ['spouse'];
-
-  if (symmetricRelationNames.includes(relationName.toLowerCase())) {
-    return relationName;
-  }
-
-  return `${relationName}^-1`;
+  return `${name}^-1`;
 }
 
 function buildUndirectedAdjacency(frames: Frame[], relations: Relation[]) {
@@ -212,11 +202,11 @@ function buildIEEdges(
 
       const exportedLabel = directionPreserved
         ? relation.label
-        : getInverseLabel(relation.label);
+        : getInverseName(relation.label);
 
       const exportedRelationName = directionPreserved
         ? relationName
-        : getInverseRelationName(relationName);
+        : getInverseName(relationName);
 
       const original: IEGraphEdge['original'] = {
         sourceId: relation.sourceId,

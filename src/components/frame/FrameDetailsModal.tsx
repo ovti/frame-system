@@ -1,5 +1,6 @@
 import { useFrameStore } from '../../store/frameStore';
 import type { Frame } from '../../types/frame';
+import { formatCount } from '../../utils/pluralize';
 import Modal from '../common/Modal';
 
 interface FrameDetailsModalProps {
@@ -20,10 +21,6 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
 
   const getFrameName = (frameId: string) => {
     return frames.find((item) => item.id === frameId)?.name ?? frameId;
-  };
-
-  const getFacetCountLabel = (count: number) => {
-    return count === 1 ? '1 facet' : `${count} facets`;
   };
 
   return (
@@ -109,7 +106,7 @@ function FrameDetailsModal({ frame, isOpen, onClose }: FrameDetailsModalProps) {
                     </h5>
 
                     <span className="w-fit shrink-0 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600 sm:text-sm">
-                      {getFacetCountLabel(slot.facets.length)}
+                      {formatCount(slot.facets.length, 'facet')}
                     </span>
                   </div>
 

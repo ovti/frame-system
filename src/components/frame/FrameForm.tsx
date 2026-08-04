@@ -1,5 +1,12 @@
 import { useState } from 'react';
+import {
+  helperTextClass,
+  inputClass,
+  primaryButtonClass,
+  secondaryButtonClass as baseSecondaryButtonClass,
+} from '../../styles/uiClasses';
 import type { Frame, FrameSlot, FrameType } from '../../types/frame';
+import { pluralize } from '../../utils/pluralize';
 import SlotForm from './SlotForm';
 
 interface FrameFormProps {
@@ -32,20 +39,7 @@ function FrameForm({
   const frameTypeInputId = `frame-type-${formId}`;
   const frameDescriptionInputId = `frame-description-${formId}`;
 
-  const secondaryButtonClass =
-    'w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto';
-
-  const primaryButtonClass =
-    'w-full cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950 sm:w-auto';
-
-  const inputClass =
-    'w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-300';
-
-  const helperTextClass = 'mt-1 text-xs text-slate-400';
-
-  const getSlotCountLabel = (count: number) => {
-    return count === 1 ? 'slot' : 'slots';
-  };
+  const secondaryButtonClass = `${baseSecondaryButtonClass} disabled:cursor-not-allowed disabled:opacity-50`;
 
   const handleAddSlot = () => {
     setError('');
@@ -235,7 +229,7 @@ function FrameForm({
 
             <p className={helperTextClass}>
               {slots.length}/{MAX_SLOTS_PER_FRAME}{' '}
-              {getSlotCountLabel(slots.length)}
+              {pluralize(slots.length, 'slot')}
             </p>
           </div>
 

@@ -4,6 +4,7 @@ import FrameCard from '../components/frame/FrameCard';
 import FrameDetailsModal from '../components/frame/FrameDetailsModal';
 import FrameForm from '../components/frame/FrameForm';
 import { useFrameStore } from '../store/frameStore';
+import { primaryButtonClass } from '../styles/uiClasses';
 import type { Frame } from '../types/frame';
 
 function FramesPage() {
@@ -15,9 +16,6 @@ function FramesPage() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-  const primaryButtonClass =
-    'w-full cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950 sm:w-auto';
 
   const handleOpenDetails = (frame: Frame) => {
     setSelectedFrame(frame);

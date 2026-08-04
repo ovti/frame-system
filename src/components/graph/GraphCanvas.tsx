@@ -326,34 +326,16 @@ function getHandleId(
   return `${side}-${type}-${slotIndex}`;
 }
 
-function getBaseEdgeStyle() {
+function getEdgeStyle(layoutRole: RelationLayoutRole) {
   return {
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      width: 15,
-      height: 15,
-    },
-    style: {
-      strokeWidth: 1.8,
-      stroke: '#9ca3af',
-    },
-    labelStyle: {
-      fontSize: 16,
-      fontWeight: 700,
-      fill: '#0f172a',
-    },
-    labelBgStyle: {
-      fill: '#ffffff',
-      fillOpacity: 0.95,
-    },
-    labelBgPadding: [8, 5] as [number, number],
-    labelBgBorderRadius: 6,
-  };
-}
-
-function getLateralEdgeStyle() {
-  return {
-    markerEnd: undefined,
+    markerEnd:
+      layoutRole === 'LATERAL'
+        ? undefined
+        : {
+            type: MarkerType.ArrowClosed,
+            width: 15,
+            height: 15,
+          },
     style: {
       strokeWidth: 1.8,
       stroke: '#9ca3af',
@@ -394,9 +376,7 @@ function assignGenericEdgeHandles(edges: Edge[], nodes: Node[]) {
         type: getEdgeType(layoutRole),
         sourceHandle: getHandleId('bottom', 'source', CENTER_HANDLE_SLOT),
         targetHandle: getHandleId('top', 'target', CENTER_HANDLE_SLOT),
-        ...(layoutRole === 'LATERAL'
-          ? getLateralEdgeStyle()
-          : getBaseEdgeStyle()),
+        ...getEdgeStyle(layoutRole),
       };
     }
 
@@ -433,9 +413,7 @@ function assignGenericEdgeHandles(edges: Edge[], nodes: Node[]) {
       type: getEdgeType(layoutRole),
       sourceHandle: getHandleId(sourceSide, 'source', sourceSlot),
       targetHandle: getHandleId(targetSide, 'target', targetSlot),
-      ...(layoutRole === 'LATERAL'
-        ? getLateralEdgeStyle()
-        : getBaseEdgeStyle()),
+      ...getEdgeStyle(layoutRole),
     };
   });
 }

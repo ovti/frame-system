@@ -1,6 +1,11 @@
 import { useMemo, useState } from 'react';
 import { exportToIEGraphJson } from '../services/ieGraphExporter';
 import { useFrameStore } from '../store/frameStore';
+import {
+  inputClass,
+  primaryButtonClass,
+  secondaryButtonClass as baseSecondaryButtonClass,
+} from '../styles/uiClasses';
 
 const FILE_NAME_MAX_LENGTH = 60;
 
@@ -28,14 +33,7 @@ function ExportPage() {
 
   const normalizedFileName = sanitizeFileName(fileName) || 'ie-graph-export';
 
-  const secondaryButtonClass =
-    'w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto';
-
-  const primaryButtonClass =
-    'w-full cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950 sm:w-auto';
-
-  const inputClass =
-    'w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-300';
+  const secondaryButtonClass = `${baseSecondaryButtonClass} disabled:cursor-not-allowed disabled:opacity-60`;
 
   const handleFileNameChange = (value: string) => {
     setFileName(value.slice(0, FILE_NAME_MAX_LENGTH));

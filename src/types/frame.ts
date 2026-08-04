@@ -3,12 +3,7 @@ export type FrameType = 'OBJECT' | 'CLASS';
 export type FacetType = 'VALUE' | 'RANGE' | 'DEFAULT';
 
 export type DemonType =
-  | 'IF_NEEDED'
-  | 'IF_ADDED'
-  | 'IF_UPDATED'
-  | 'IF_REMOVED'
-  | 'IF_READ'
-  | 'IF_NEW';
+  'IF_NEEDED' | 'IF_ADDED' | 'IF_UPDATED' | 'IF_REMOVED' | 'IF_READ' | 'IF_NEW';
 
 export interface FrameFacet {
   id: string;

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Modal from '../components/common/Modal';
 import RelationForm from '../relation/RelationForm';
 import { useFrameStore } from '../store/frameStore';
+import { dangerButtonClass, primaryButtonClass } from '../styles/uiClasses';
 import type { Relation } from '../types/relation';
 
 function RelationsPage() {
@@ -15,12 +16,6 @@ function RelationsPage() {
     addRelation(relation);
     setIsModalOpen(false);
   };
-
-  const primaryButtonClass =
-    'w-full cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950 sm:w-auto';
-
-  const dangerButtonClass =
-    'w-full cursor-pointer rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 shadow-sm transition hover:border-red-300 hover:bg-red-50 hover:shadow focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 active:bg-red-100 sm:w-auto';
 
   return (
     <div>

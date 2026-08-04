@@ -1,5 +1,10 @@
 import { useMemo, useState } from 'react';
 import { relationPresetGroups } from '../data/relationPresets';
+import {
+  inputClass,
+  primaryButtonClass,
+  secondaryButtonClass,
+} from '../styles/uiClasses';
 import type { Frame } from '../types/frame';
 import type { Relation, RelationCategory } from '../types/relation';
 
@@ -25,16 +30,7 @@ function RelationForm({ frames, onSubmit, onCancel }: RelationFormProps) {
   const sourceFrameInputId = 'source-frame';
   const targetFrameInputId = 'target-frame';
 
-  const inputClass =
-    'w-full rounded-xl border border-slate-300 px-4 py-2 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-300';
-
   const helperTextClass = 'mt-1 text-sm text-slate-500';
-
-  const secondaryButtonClass =
-    'w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:bg-slate-200 sm:w-auto';
-
-  const primaryButtonClass =
-    'w-full cursor-pointer rounded-xl bg-slate-900 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-slate-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-950 sm:w-auto';
 
   const selectedGroup = useMemo(() => {
     return (
