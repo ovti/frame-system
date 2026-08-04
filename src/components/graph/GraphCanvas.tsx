@@ -12,6 +12,7 @@ import {
   type Node,
   type NodeChange,
   type NodeMouseHandler,
+  type OnNodeDrag,
 } from '@xyflow/react';
 import ELK from 'elkjs/lib/elk.bundled.js';
 import { useEffect, useMemo, useState } from 'react';
@@ -372,11 +373,7 @@ function getLateralEdgeStyle() {
 }
 
 function getEdgeType(layoutRole: RelationLayoutRole) {
-  if (layoutRole === 'TREE') {
-    return 'smoothstep';
-  }
-
-  if (layoutRole === 'LATERAL') {
+  if (layoutRole === 'TREE' || layoutRole === 'LATERAL') {
     return 'smoothstep';
   }
 
@@ -540,7 +537,7 @@ function GraphCanvas() {
     });
   };
 
-  const handleNodeDragStop: NodeMouseHandler = () => {
+  const handleNodeDragStop: OnNodeDrag<Node> = () => {
     setNodePositions(getPositionsFromNodes(nodes));
   };
 

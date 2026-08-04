@@ -1,5 +1,3 @@
-import type { Relation } from './relation';
-
 export type FrameType = 'OBJECT' | 'CLASS';
 
 export type FacetType = 'VALUE' | 'RANGE' | 'DEFAULT';
@@ -39,5 +37,4 @@ export interface Frame {
   parentIds: string[];
   childIds: string[];
   slots: FrameSlot[];
-  relations: Relation[];
 }

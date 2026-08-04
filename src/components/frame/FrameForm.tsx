@@ -132,7 +132,6 @@ function FrameForm({
           description: demon.description.trim(),
         })),
       })),
-      relations: initialFrame?.relations ?? [],
     };
 
     onSubmit(frame);

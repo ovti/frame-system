@@ -391,10 +391,3 @@ export function exportToIEGraphJson(
     edges: json.graph.E,
   };
 }
-
-export function exportToIEGraphText(
-  frames: Frame[],
-  relations: Relation[],
-): ExportResult {
-  return exportToIEGraphJson(frames, relations);
-}

@@ -9,19 +9,16 @@ import type { Relation } from '../types/relation';
 interface FrameStore {
   frames: Frame[];
   relations: Relation[];
-  selectedFrame: Frame | null;
   nodePositions: GraphNodePositions;
 
   addFrame: (frame: Frame) => void;
   updateFrame: (updatedFrame: Frame) => void;
   deleteFrame: (frameId: string) => void;
-  selectFrame: (frame: Frame | null) => void;
 
   addRelation: (relation: Relation) => void;
   deleteRelation: (relationId: string) => void;
 
   setNodePositions: (positions: GraphNodePositions) => void;
-  clearNodePositions: () => void;
 
   resetStore: () => void;
 }
@@ -45,7 +42,6 @@ export const useFrameStore = create<FrameStore>()(
     (set) => ({
       frames: sampleFrames,
       relations: sampleRelations,
-      selectedFrame: null,
       nodePositions: {},
 
       addFrame: (frame) =>
@@ -77,16 +73,9 @@ export const useFrameStore = create<FrameStore>()(
               (relation) =>
                 relation.sourceId !== frameId && relation.targetId !== frameId,
             ),
-            selectedFrame:
-              state.selectedFrame?.id === frameId ? null : state.selectedFrame,
             nodePositions: nextNodePositions,
           };
         }),
-
-      selectFrame: (frame) =>
-        set(() => ({
-          selectedFrame: frame,
-        })),
 
       addRelation: (relation) =>
         set((state) => {
@@ -205,16 +194,10 @@ export const useFrameStore = create<FrameStore>()(
           nodePositions: positions,
         })),
 
-      clearNodePositions: () =>
-        set(() => ({
-          nodePositions: {},
-        })),
-
       resetStore: () =>
         set(() => ({
           frames: sampleFrames,
           relations: sampleRelations,
-          selectedFrame: null,
           nodePositions: {},
         })),
     }),

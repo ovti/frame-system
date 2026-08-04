@@ -32,7 +32,6 @@ export const sampleFrames: Frame[] = [
         ],
       },
     ],
-    relations: [],
   },
   {
     id: 'jan',
@@ -65,7 +64,6 @@ export const sampleFrames: Frame[] = [
         ],
       },
     ],
-    relations: [],
   },
   {
     id: 'piotr',
@@ -98,7 +96,6 @@ export const sampleFrames: Frame[] = [
         ],
       },
     ],
-    relations: [],
   },
 ];
 

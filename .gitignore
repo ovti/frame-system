@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .vscode
+
+CLAUDE.md
+desc.txt
+docs

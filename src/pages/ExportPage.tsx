@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { exportToIEGraphText } from '../services/ieGraphExporter';
+import { exportToIEGraphJson } from '../services/ieGraphExporter';
 import { useFrameStore } from '../store/frameStore';
 
 const FILE_NAME_MAX_LENGTH = 60;
@@ -23,7 +23,7 @@ function ExportPage() {
   const fileNameInputId = 'export-file-name';
 
   const exportResult = useMemo(() => {
-    return exportToIEGraphText(frames, relations);
+    return exportToIEGraphJson(frames, relations);
   }, [frames, relations]);
 
   const normalizedFileName = sanitizeFileName(fileName) || 'ie-graph-export';
